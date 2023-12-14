@@ -32,6 +32,7 @@ class SelectAssetDialog extends StatelessWidget {
               title: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 1.0),
                 child: NomoInput(
+                  background: context.theme.colors.surface,
                   margin: const EdgeInsets.symmetric(
                     horizontal: 16,
                   ),
@@ -41,7 +42,10 @@ class SelectAssetDialog extends StatelessWidget {
                     color: context.theme.colors.background3,
                     width: 1,
                   ),
-                  leading: const Icon(Icons.search),
+                  leading: Icon(
+                    Icons.search,
+                    color: context.theme.colors.foreground1,
+                  ),
                   placeHolder: "Search",
                 ),
               ),

@@ -35,14 +35,14 @@ class SwapAssetInput extends StatelessWidget {
             ),
             style: context.theme.typography.b3,
             placeHolderStyle: context.theme.typography.b3,
-            leading: SelectAsset(),
+            leading: const SelectAsset(),
             textAlign: TextAlign.end,
             padding: const EdgeInsets.symmetric(
               horizontal: 6,
               vertical: 12,
             ),
             inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,4}')),
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
             ],
           ),
         ),
