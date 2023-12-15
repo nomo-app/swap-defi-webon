@@ -1,16 +1,7 @@
-# swapping_webon
+# Under Construction
 
-A new Flutter project.
+The swap-webon-flutter is not yet usable.
+Please refer to the WebOn Discovery to find WebOns that are already working.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# swap-webon-flutter
+A WebOn for DeFi-enthusiasts; implemented with Flutter and with the Nomo-UI-Kit
