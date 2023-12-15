@@ -4,6 +4,7 @@ import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart'
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 
 class SwapCard extends StatelessWidget {
@@ -28,7 +29,8 @@ class SwapCard extends StatelessWidget {
               style: context.theme.typography.b3,
             ),
             const SizedBox(height: 16),
-            const SwapAssetInput(),
+            const SwapAssetInput(
+                showBottomInfo: true, inputActions: InputActions()),
             const SizedBox(height: 32),
             Align(
               alignment: Alignment.center,
@@ -47,7 +49,8 @@ class SwapCard extends StatelessWidget {
               style: context.theme.typography.b3,
             ),
             const SizedBox(height: 16),
-            const SwapAssetInput(),
+            const SwapAssetInput(
+                showBottomInfo: true, inputActions: InputActions()),
             const Spacer(),
             PrimaryNomoButton(
               text: "Swap",

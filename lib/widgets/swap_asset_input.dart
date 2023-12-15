@@ -4,46 +4,63 @@ import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
 
+const _kExpand = Duration(milliseconds: 300);
+
 class SwapAssetInput extends StatelessWidget {
-  const SwapAssetInput({super.key});
+  final bool showBottomInfo;
+  final Widget? inputActions;
+
+  const SwapAssetInput(
+      {super.key, required this.showBottomInfo, this.inputActions});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: context.theme.colors.background2,
+        NomoInput(
+          selectedBorder: Border.all(
+            color: Colors.transparent,
+            width: 1,
           ),
-          height: 100,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(12),
+          ),
+          margin: const EdgeInsets.all(0),
+          background: context.theme.colors.background2,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          maxLines: 1,
+          style: context.theme.typography.b3,
+          placeHolderStyle: context.theme.typography.b3,
+          leading: const SelectAsset(),
+          textAlign: TextAlign.end,
+          padding: const EdgeInsets.only(
+            left: 4,
+            right: 12,
+            top: 12,
+            bottom: 12,
+          ),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
+          ],
         ),
-        Positioned(
-          top: 12,
-          left: 5,
-          right: 5,
-          bottom: 5,
-          child: NomoInput(
-            margin: const EdgeInsets.all(6),
-            background: context.theme.colors.surface,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            placeHolder: "0",
-            maxLines: 1,
-            border: Border.all(
-              color: context.theme.colors.background3,
-              width: 1,
+        AnimatedContainer(
+          height: showBottomInfo ? 32 : 0,
+          duration: _kExpand,
+          decoration: BoxDecoration(
+            color: context.theme.colors.background2,
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(12),
             ),
-            style: context.theme.typography.b3,
-            placeHolderStyle: context.theme.typography.b3,
-            leading: const SelectAsset(),
-            textAlign: TextAlign.end,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 12,
-            ),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
-            ],
+          ),
+          padding: const EdgeInsets.only(
+            left: 12,
+            right: 12,
+            bottom: 12,
+          ),
+          child: AnimatedOpacity(
+            opacity: showBottomInfo ? 1 : 0,
+            duration: _kExpand,
+            child: inputActions,
           ),
         ),
       ],

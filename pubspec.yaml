@@ -33,6 +33,7 @@ dependencies:
   nomo_ui_kit:
       path: packages/nomo-ui-kit
   google_fonts: ^6.1.0
+  hooks_riverpod: ^2.3.5
   flutter_web_plugins:
     sdk: flutter
 

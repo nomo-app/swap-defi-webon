@@ -47,3 +47,5 @@ app.*.map.json
 /linux
 /windows
 .fvm
+.vscode/settings.json
+pubspec.lock
