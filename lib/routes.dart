@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:nomo_router/router/entities/route.dart';
 import 'package:nomo_ui_kit/components/app/app_bar/nomo_app_bar.dart';
 import 'package:nomo_ui_kit/components/app/scaffold/nomo_scaffold.dart';
 import 'package:nomo_ui_kit/nomo_ui_kit_base.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:nomo_ui_kit/theme/theme_provider.dart';
+import 'package:route_gen/anotations.dart';
 import 'package:swapping_webon/pages/swapping_screen.dart';
 import 'package:swapping_webon/theme/theme.dart';
 
-Widget Function(Widget nav) wrapper = (nav) {
+part 'routes.g.dart';
+
+Widget wrapper(nav) {
   return Builder(
     builder: (context) {
       final themeProvider = ThemeProvider.of(context);
@@ -54,13 +58,14 @@ Widget Function(Widget nav) wrapper = (nav) {
       );
     },
   );
-};
+}
 
-final routes = [
+@AppRoutes()
+const _routes = [
   MenuNestedPageRouteInfo(
     wrapper: wrapper,
-    name: "/",
-    page: const SwappingScreen(),
+    path: "/",
+    page: SwappingScreen,
     title: "Swapping Screen",
   ),
-].expanded.toList();
+];

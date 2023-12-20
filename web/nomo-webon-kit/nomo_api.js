@@ -533,5 +533,5 @@ export async function nomoLaunchSmartchainFaucet() {
 
 window.nomo = nomo;
 window.nomoGetVisibleAssets = nomoGetVisibleAssets;
-window.isFallbackModeActive = isFallbackModeActive;
+window.nomoGetAssetIcon = nomoGetAssetIcon;
 

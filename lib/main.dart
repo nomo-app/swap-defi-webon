@@ -6,6 +6,8 @@ import 'package:swapping_webon/routes.dart';
 import 'package:swapping_webon/theme/theme.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
+final appRouter = AppRouter();
+
 void main() {
   usePathUrlStrategy();
 
@@ -32,7 +34,7 @@ class MyApp extends StatelessWidget {
           constants: constants,
         ),
         supportedLocales: const [Locale('en', 'US')],
-        routes: routes,
+        appRouter: appRouter,
       ),
     );
   }
