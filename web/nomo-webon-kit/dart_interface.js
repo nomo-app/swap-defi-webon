@@ -1,4 +1,4 @@
-import { decodeBase64UTF16 } from "./util";
+import { decodeBase64UTF16 } from "./util.js";
 export function isFallbackModeActive() {
     return !getDartBridge();
 }

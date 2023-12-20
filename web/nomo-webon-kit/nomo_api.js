@@ -1,6 +1,6 @@
-import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface";
-import { nomoAuthFetch } from "./nomo_auth";
-import { compareSemanticVersions } from "./util";
+import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface.js";
+import { nomoAuthFetch } from "./nomo_auth.js";
+import { compareSemanticVersions } from "./util.js";
 /**
  * Gets details about the execution environment of the WebOn.
  * See the advanced docs for more details about execution modes: https://github.com/nomo-app/nomo-webon-kit/tree/main/advanced-docs
@@ -530,4 +530,8 @@ export async function nomoLaunchSmartchainFaucet() {
     });
 }
 
+
 window.nomo = nomo;
+window.nomoGetVisibleAssets = nomoGetVisibleAssets;
+window.isFallbackModeActive = isFallbackModeActive;
+

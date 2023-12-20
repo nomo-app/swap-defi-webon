@@ -1,5 +1,5 @@
-import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface";
-import { nomo } from "./nomo_api";
+import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface.js";
+import { nomo } from "./nomo_api.js";
 /**
  * Switches the Nomo App to a different theme.
  * It is recommended to call "injectNomoCSSVariables" after a theme has changed.

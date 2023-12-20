@@ -1,4 +1,4 @@
-import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface";
+import { invokeNomoFunction, isFallbackModeActive } from "./dart_interface.js";
 /**
  * An internal function used by nomoAuthHttp
  */
