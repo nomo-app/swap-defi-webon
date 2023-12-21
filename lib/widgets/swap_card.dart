@@ -78,7 +78,10 @@ class SwapCard extends ConsumerWidget {
                 width: 40,
                 shape: BoxShape.circle,
                 child: const Icon(Icons.swap_vert, size: 30),
-                onPressed: () => print("swap assets"),
+                onPressed: () {
+                  ref.read(fromProvider.notifier).state = toToken;
+                  ref.read(toProvider.notifier).state = fromToken;
+                },
               ),
             ),
             NomoText(
