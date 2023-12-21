@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:js/js.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/widgets/select_asset_dialog.dart';
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:js_util' as js_util;
-
-import 'package:swapping_webon/widgets/token.dart';
 
 class SelectAsset extends StatelessWidget {
   const SelectAsset({super.key});
@@ -45,35 +40,5 @@ class SelectAssetButtonData extends StatelessWidget {
         Icon(Icons.arrow_forward_ios_outlined, size: 16)
       ],
     );
-  }
-}
-
-@JS()
-external dynamic nomoGetVisibleAssets();
-
-Future<List<Token>> getAssetsFromNomo() async {
-  final jsAssetsPromise = nomoGetVisibleAssets();
-
-  final futureAssets = js_util.promiseToFuture(jsAssetsPromise);
-
-  try {
-    final result = await futureAssets;
-    final resultAsMap = js_util.getProperty(result, 'visibleAssets');
-    List<Token> tokens = [];
-    resultAsMap.forEach((element) {
-      tokens.add(
-        Token(
-          name: js_util.getProperty(element, 'name'),
-          symbol: js_util.getProperty(element, 'symbol'),
-          decimals: js_util.getProperty(element, 'decimals'),
-          contractAddress: js_util.getProperty(element, 'contractAddress'),
-        ),
-      );
-    });
-
-    return tokens;
-  } catch (e) {
-    print("Error: $e");
-    return [];
   }
 }

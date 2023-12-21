@@ -22,9 +22,7 @@ class SwapAssetInput extends StatelessWidget {
             color: Colors.transparent,
             width: 1,
           ),
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(12),
-          ),
+          borderRadius: _kBorderRadius(showBottomInfo),
           margin: const EdgeInsets.all(0),
           background: context.theme.colors.background2,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -43,27 +41,41 @@ class SwapAssetInput extends StatelessWidget {
             FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
           ],
         ),
-        AnimatedContainer(
-          height: showBottomInfo ? 32 : 0,
-          duration: _kExpand,
-          decoration: BoxDecoration(
-            color: context.theme.colors.background2,
-            borderRadius: const BorderRadius.vertical(
-              bottom: Radius.circular(12),
+        if (showBottomInfo)
+          AnimatedContainer(
+            height: showBottomInfo ? 32 : 0,
+            duration: _kExpand,
+            decoration: BoxDecoration(
+              color: context.theme.colors.background2,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
+              ),
+            ),
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              bottom: 12,
+            ),
+            child: AnimatedOpacity(
+              opacity: showBottomInfo ? 1 : 0,
+              duration: _kExpand,
+              child: inputActions,
             ),
           ),
-          padding: const EdgeInsets.only(
-            left: 12,
-            right: 12,
-            bottom: 12,
-          ),
-          child: AnimatedOpacity(
-            opacity: showBottomInfo ? 1 : 0,
-            duration: _kExpand,
-            child: inputActions,
-          ),
-        ),
       ],
+    );
+  }
+
+  BorderRadiusGeometry _kBorderRadius(bool showBottomInfo) {
+    if (showBottomInfo) {
+      return const BorderRadius.vertical(
+        top: Radius.circular(12),
+      );
+    }
+
+    return const BorderRadius.vertical(
+      top: Radius.circular(12),
+      bottom: Radius.circular(12),
     );
   }
 }
