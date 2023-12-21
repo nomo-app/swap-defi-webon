@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
+import 'package:nomo_ui_kit/components/buttons/text/nomo_text_button.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
@@ -38,16 +39,35 @@ class SwapCard extends ConsumerWidget {
           maxWidth: 600,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            NomoText(
-              "From",
-              style: context.theme.typography.b3,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                NomoText(
+                  "From",
+                  style: context.theme.typography.b3,
+                ),
+                NomoTextButton(
+                  text: "Clear All",
+                  padding: const EdgeInsets.all(8),
+                  textStyle: context.theme.typography.b1.copyWith(
+                    color: context.theme.colors.error,
+                  ),
+                  onPressed: () {
+                    ref.read(fromProvider.notifier).state = null;
+                    ref.read(toProvider.notifier).state = null;
+                  },
+                )
+              ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             SwapAssetInput(
-                showBottomInfo: showBottomInfoFrom,
-                inputActions: InputActions()),
+              showBottomInfo: showBottomInfoFrom,
+              inputActions: InputActions(token: fromToken),
+              isFrom: true,
+            ),
             const SizedBox(height: 32),
             Align(
               alignment: Alignment.center,
@@ -65,10 +85,13 @@ class SwapCard extends ConsumerWidget {
               "To",
               style: context.theme.typography.b3,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 24),
             SwapAssetInput(
-                showBottomInfo: showBottomInfoTo, inputActions: InputActions()),
-            const Spacer(),
+              showBottomInfo: showBottomInfoTo,
+              inputActions: InputActions(token: toToken),
+              isFrom: false,
+            ),
+            const SizedBox(height: 64),
             PrimaryNomoButton(
               text: "Swap",
               textStyle: context.theme.typography.h2.copyWith(

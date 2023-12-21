@@ -9,6 +9,6 @@ class PriceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return NomoText(token.name);
+    return NomoText(token.name!);
   }
 }

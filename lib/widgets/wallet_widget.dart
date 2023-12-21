@@ -54,7 +54,7 @@ class WalletWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             NomoText(
-                              token.name,
+                              token.name!,
                               style: context.typography.b2.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),

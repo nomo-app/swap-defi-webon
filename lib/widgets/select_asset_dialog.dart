@@ -8,7 +8,8 @@ import 'package:swapping_webon/provider/filter_provider.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
 
 class SelectAssetDialog extends ConsumerWidget {
-  const SelectAssetDialog({super.key});
+  final bool isFrom;
+  const SelectAssetDialog({required this.isFrom, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,10 +42,15 @@ class SelectAssetDialog extends ConsumerWidget {
                       token: token,
                       onTap: () {
                         Navigator.of(context).pop(token);
+                        if (isFrom) {
+                          ref.read(fromProvider.notifier).state = token;
+                        } else {
+                          ref.read(toProvider.notifier).state = token;
+                        }
                       },
                     );
                     if (filter == null || filter.isEmpty) return widget;
-                    if (token.name.toLowerCase().contains(filter) ||
+                    if (token.name!.toLowerCase().contains(filter) ||
                         token.symbol.toLowerCase().contains(filter)) {
                       return widget;
                     }
