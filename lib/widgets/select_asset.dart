@@ -16,6 +16,7 @@ class SelectAsset extends ConsumerWidget {
     final token = isFrom ? ref.watch(fromProvider) : ref.watch(toProvider);
     return PrimaryNomoButton(
       onPressed: () {
+        getAssetIcon("ETH");
         showDialog(
           context: context,
           builder: (context) => SelectAssetDialog(
@@ -48,6 +49,8 @@ class SelectAssetButtonData extends StatelessWidget {
         token != null
             ? NomoText(token!.symbol)
             : const NomoText(
+                fontSize: 18,
+                minFontSize: 12,
                 "Select",
               ),
         const SizedBox(width: 4),

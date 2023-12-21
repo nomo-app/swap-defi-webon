@@ -60,6 +60,8 @@ export async function nomoSelectAssetFromDialog() {
  * Returns a list of assets that are currently visible in the Nomo Wallet.
  */
 export async function nomoGetVisibleAssets() {
+    console.log("nomoGetVisibleAssetsInJS");
+
     if (isFallbackModeActive()) {
         return {
             visibleAssets: [
@@ -101,7 +103,9 @@ export async function nomoGetWalletAddresses() {
  * May throw an error if no icons can be found.
  */
 export async function nomoGetAssetIcon(args) {
+    console.log("nomoGetAssetIconInJS", args.symbol);
     const legacyArgs = Object.assign(Object.assign({}, args), { assetSymbol: args.symbol });
+    console.log("nomoGetAssetIconInJSLegacy", legacyArgs);
     return await invokeNomoFunctionCached("nomoGetAssetIcon", legacyArgs);
 }
 /**
@@ -144,3 +148,4 @@ export async function nomoAddCustomToken(args) {
 
 
 window.nomoGetVisibleAssets = nomoGetVisibleAssets;
+window.nomoGetAssetIcon = nomoGetAssetIcon;

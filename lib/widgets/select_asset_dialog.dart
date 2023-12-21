@@ -18,6 +18,7 @@ class SelectAssetDialog extends ConsumerWidget {
     final filter = ref.watch(filterProvider);
 
     return NomoDialog(
+      titleStyle: context.theme.typography.h2,
       maxWidth: 450,
       title: "Select Asset",
       content: SizedBox(

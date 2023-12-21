@@ -31,6 +31,9 @@ Future<List<Token>> getAssetsFromNomo() async {
         ),
       );
     });
+
+    // print("Token Symbol: ${tokens[0].symbol}");
+
     return tokens;
   } catch (e) {
     return [];
@@ -44,3 +47,28 @@ final fromProvider = StateProvider<Token?>(
 final toProvider = StateProvider<Token?>(
   (ref) => null,
 );
+
+@JS()
+external dynamic nomoGetAssetIcon(Args args);
+
+@JS()
+@anonymous
+class Args {
+  external String get symbol;
+  external factory Args({String symbol});
+}
+
+Future<String> getAssetIcon(String symbol) async {
+  final jsAssetsPromise = nomoGetAssetIcon(Args(symbol: symbol));
+
+  final futureAssets = promiseToFuture(jsAssetsPromise);
+  try {
+    final result = await futureAssets;
+    //print(result);
+
+    return "went through";
+  } catch (e) {
+//    print(e);
+    return '';
+  }
+}

@@ -48,6 +48,7 @@ const nomoFunctionCache = {};
 export async function invokeNomoFunctionCached(functionName, args) {
     const key = functionName;
     if (!nomoFunctionCache[key]) {
+        console.log.error("invokeNomoFunction", functionName, args)
         nomoFunctionCache[key] = await invokeNomoFunction(functionName, args);
     }
     return nomoFunctionCache[key];

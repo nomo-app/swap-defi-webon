@@ -38,76 +38,78 @@ class SwapCard extends ConsumerWidget {
         constraints: const BoxConstraints(
           maxWidth: 600,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                NomoText(
-                  "From",
-                  style: context.theme.typography.b3,
-                ),
-                NomoTextButton(
-                  text: "Clear All",
-                  padding: const EdgeInsets.all(8),
-                  textStyle: context.theme.typography.b1.copyWith(
-                    color: context.theme.colors.error,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  NomoText(
+                    "From",
+                    style: context.theme.typography.b3,
                   ),
+                  NomoTextButton(
+                    text: "Clear All",
+                    padding: const EdgeInsets.all(8),
+                    textStyle: context.theme.typography.b3.copyWith(
+                      color: context.theme.colors.error,
+                    ),
+                    onPressed: () {
+                      ref.read(fromProvider.notifier).state = null;
+                      ref.read(toProvider.notifier).state = null;
+                    },
+                  )
+                ],
+              ),
+              const SizedBox(height: 24),
+              SwapAssetInput(
+                showBottomInfo: showBottomInfoFrom,
+                inputActions: InputActions(token: fromToken),
+                isFrom: true,
+              ),
+              const SizedBox(height: 32),
+              Align(
+                alignment: Alignment.center,
+                child: NomoButton(
+                  backgroundColor: context.theme.colors.surface,
+                  elevation: 2,
+                  height: 40,
+                  width: 40,
+                  shape: BoxShape.circle,
+                  child: const Icon(Icons.swap_vert, size: 30),
                   onPressed: () {
-                    ref.read(fromProvider.notifier).state = null;
-                    ref.read(toProvider.notifier).state = null;
+                    ref.read(fromProvider.notifier).state = toToken;
+                    ref.read(toProvider.notifier).state = fromToken;
                   },
-                )
-              ],
-            ),
-            const SizedBox(height: 24),
-            SwapAssetInput(
-              showBottomInfo: showBottomInfoFrom,
-              inputActions: InputActions(token: fromToken),
-              isFrom: true,
-            ),
-            const SizedBox(height: 32),
-            Align(
-              alignment: Alignment.center,
-              child: NomoButton(
-                backgroundColor: context.theme.colors.surface,
+                ),
+              ),
+              NomoText(
+                "To",
+                style: context.theme.typography.b3,
+              ),
+              const SizedBox(height: 24),
+              SwapAssetInput(
+                showBottomInfo: showBottomInfoTo,
+                inputActions: InputActions(token: toToken),
+                isFrom: false,
+              ),
+              const SizedBox(height: 64),
+              PrimaryNomoButton(
+                text: "Swap",
+                textStyle: context.theme.typography.h2.copyWith(
+                  color: context.theme.colors.onPrimary,
+                  fontWeight: FontWeight.bold,
+                ),
+                onPressed: () => print("swap"),
+                height: 48,
+                width: double.infinity,
                 elevation: 2,
-                height: 40,
-                width: 40,
-                shape: BoxShape.circle,
-                child: const Icon(Icons.swap_vert, size: 30),
-                onPressed: () {
-                  ref.read(fromProvider.notifier).state = toToken;
-                  ref.read(toProvider.notifier).state = fromToken;
-                },
+                enabled: false,
               ),
-            ),
-            NomoText(
-              "To",
-              style: context.theme.typography.b3,
-            ),
-            const SizedBox(height: 24),
-            SwapAssetInput(
-              showBottomInfo: showBottomInfoTo,
-              inputActions: InputActions(token: toToken),
-              isFrom: false,
-            ),
-            const SizedBox(height: 64),
-            PrimaryNomoButton(
-              text: "Swap",
-              textStyle: context.theme.typography.h2.copyWith(
-                color: context.theme.colors.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-              onPressed: () => print("swap"),
-              height: 48,
-              width: double.infinity,
-              elevation: 2,
-              enabled: false,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
