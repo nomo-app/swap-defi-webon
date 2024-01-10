@@ -3,41 +3,59 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
 class InputActions extends ConsumerWidget {
   final Token? token;
-  const InputActions({required this.token, super.key});
+  final bool isFrom;
+  const InputActions({required this.token, required this.isFrom, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final amount = Amount.fromString(
+        value: token?.balance ?? "0", decimals: token?.decimals ?? 0);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Flexible(
           child: NomoText(
-            token?.balance ?? "0.0",
+            amount.displayValue.toString(),
             style: context.theme.typography.b1,
             opacity: 0.5,
             maxLines: 2,
             minFontSize: 8,
           ),
         ),
-        const Row(
+        Row(
           children: [
             InputActionButton(
+              onPressed: () {
+                selectAmount(0.25, ref, isFrom);
+              },
               text: "25%",
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             InputActionButton(
+              onPressed: () {
+                selectAmount(0.5, ref, isFrom);
+              },
               text: "50%",
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             InputActionButton(
+              onPressed: () {
+                selectAmount(0.75, ref, isFrom);
+              },
               text: "75%",
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             InputActionButton(
+              onPressed: () {
+                selectAmount(1, ref, isFrom);
+              },
               text: "max",
             ),
           ],
@@ -45,12 +63,30 @@ class InputActions extends ConsumerWidget {
       ],
     );
   }
+
+  selectAmount(double percentage, WidgetRef ref, bool isFrom) {
+    final token =
+        ref.read(isFrom ? fromProvider.notifier : toProvider.notifier).state;
+
+    final amount = Amount.fromString(
+        value: token?.balance ?? "0", decimals: token?.decimals ?? 0);
+    final value = amount.displayValue * percentage;
+
+    if (token != null) {
+      var updatedToken = token.copyWith(
+        selectedValue: value,
+      );
+      ref.read(isFrom ? fromProvider.notifier : toProvider.notifier).state =
+          updatedToken;
+    }
+  }
 }
 
 class InputActionButton extends StatelessWidget {
   final String text;
-
-  const InputActionButton({super.key, required this.text});
+  final Function onPressed;
+  const InputActionButton(
+      {super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +104,7 @@ class InputActionButton extends StatelessWidget {
         style: context.theme.typography.b1,
         color: context.theme.colors.primary,
       ),
-      onPressed: () => print(text),
+      onPressed: () => onPressed(),
     );
   }
 }

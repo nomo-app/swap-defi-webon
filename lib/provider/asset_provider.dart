@@ -18,21 +18,22 @@ Future<List<Token>> getAssetsFromNomo() async {
     final result = await futureAssets;
     final resultAsMap = getProperty(result, 'visibleAssets');
     List<Token> tokens = [];
-    resultAsMap.forEach((element) {
+    resultAsMap.forEach((element) async {
+      var balance = getProperty(element, 'balance');
+      balance ??= await getBalance(getProperty(element, 'symbol'));
+
       tokens.add(
         Token(
           name: getProperty(element, 'name'),
           symbol: getProperty(element, 'symbol'),
           decimals: getProperty(element, 'decimals'),
           contractAddress: getProperty(element, 'contractAddress'),
-          balance: getProperty(element, 'balance'),
+          balance: balance,
           network: getProperty(element, 'network'),
           receiveAddress: getProperty(element, 'receiveAddress'),
         ),
       );
     });
-
-    // print("Token Symbol: ${tokens[0].symbol}");
 
     return tokens;
   } catch (e) {
@@ -49,26 +50,43 @@ final toProvider = StateProvider<Token?>(
 );
 
 @JS()
-external dynamic nomoGetAssetIcon(Args args);
-
-@JS()
 @anonymous
 class Args {
   external String get symbol;
   external factory Args({String symbol});
 }
 
+@JS()
+external dynamic nomoGetAssetIcon(Args args);
+
 Future<String> getAssetIcon(String symbol) async {
   final jsAssetsPromise = nomoGetAssetIcon(Args(symbol: symbol));
 
-  final futureAssets = promiseToFuture(jsAssetsPromise);
+  final futureAssetIcon = promiseToFuture(jsAssetsPromise);
   try {
-    final result = await futureAssets;
-    //print(result);
+    final result = await futureAssetIcon;
+    final assetLocationString = getProperty(result, 'small');
+    print(assetLocationString);
 
-    return "went through";
+    return assetLocationString;
   } catch (e) {
-//    print(e);
-    return '';
+    return 'no icon found: $e';
+  }
+}
+
+@JS()
+external dynamic nomoGetBalance(Args args);
+
+Future<String> getBalance(String symbol) async {
+  final jsBalancePromise = nomoGetBalance(Args(symbol: symbol));
+
+  final futureBalance = promiseToFuture(jsBalancePromise);
+  try {
+    final result = await futureBalance;
+    final balanceString = getProperty(result, 'balance');
+
+    return balanceString;
+  } catch (e) {
+    return 'no balance found: $e';
   }
 }

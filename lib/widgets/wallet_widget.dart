@@ -76,16 +76,8 @@ class WalletWidget extends StatelessWidget {
                         constraints: BoxConstraints(
                           maxWidth: valueWidth,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            PriceDisplay(
-                              token,
-                            ),
-                            BalanceDisplay(
-                              token,
-                            ),
-                          ],
+                        child: BalanceDisplay(
+                          token,
                         ),
                       )
                     ],

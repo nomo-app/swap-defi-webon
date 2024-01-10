@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
+import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
 class BalanceDisplay extends ConsumerWidget {
@@ -9,6 +10,9 @@ class BalanceDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return NomoText(token.symbol);
+    final amount = Amount.fromString(
+        value: token.balance ?? "0", decimals: token.decimals);
+
+    return NomoText(amount.displayValue.toString());
   }
 }

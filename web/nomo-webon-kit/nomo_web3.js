@@ -146,6 +146,6 @@ export async function nomoAddCustomToken(args) {
     return await invokeNomoFunction("nomoAddCustomToken", args);
 }
 
-
-window.nomoGetVisibleAssets = nomoGetVisibleAssets;
 window.nomoGetAssetIcon = nomoGetAssetIcon;
+window.nomoGetBalance = nomoGetBalance;
+window.nomoGetVisibleAssets = nomoGetVisibleAssets;

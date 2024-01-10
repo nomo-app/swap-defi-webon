@@ -51,6 +51,17 @@ class SwapCard extends ConsumerWidget {
                     style: context.theme.typography.b3,
                   ),
                   NomoTextButton(
+                    text: "get Icon",
+                    padding: const EdgeInsets.all(8),
+                    textStyle: context.theme.typography.b3.copyWith(
+                      color: context.theme.colors.primary,
+                    ),
+                    onPressed: () async {
+                      String assetLocation = await getAssetIcon("ETH");
+                      print("This is the asset location: $assetLocation");
+                    },
+                  ),
+                  NomoTextButton(
                     text: "Clear All",
                     padding: const EdgeInsets.all(8),
                     textStyle: context.theme.typography.b3.copyWith(
@@ -66,19 +77,23 @@ class SwapCard extends ConsumerWidget {
               const SizedBox(height: 24),
               SwapAssetInput(
                 showBottomInfo: showBottomInfoFrom,
-                inputActions: InputActions(token: fromToken),
+                inputActions: InputActions(token: fromToken, isFrom: true),
                 isFrom: true,
               ),
               const SizedBox(height: 32),
               Align(
                 alignment: Alignment.center,
                 child: NomoButton(
-                  backgroundColor: context.theme.colors.surface,
+                  backgroundColor: context.theme.colors.primary,
                   elevation: 2,
                   height: 40,
                   width: 40,
                   shape: BoxShape.circle,
-                  child: const Icon(Icons.swap_vert, size: 30),
+                  child: Icon(
+                    Icons.swap_vert,
+                    size: 30,
+                    color: context.theme.colors.onPrimary,
+                  ),
                   onPressed: () {
                     ref.read(fromProvider.notifier).state = toToken;
                     ref.read(toProvider.notifier).state = fromToken;
@@ -92,7 +107,7 @@ class SwapCard extends ConsumerWidget {
               const SizedBox(height: 24),
               SwapAssetInput(
                 showBottomInfo: showBottomInfoTo,
-                inputActions: InputActions(token: toToken),
+                inputActions: InputActions(token: toToken, isFrom: false),
                 isFrom: false,
               ),
               const SizedBox(height: 64),

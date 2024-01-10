@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 const _kExpand = Duration(milliseconds: 300);
 
-class SwapAssetInput extends StatelessWidget {
+class SwapAssetInput extends HookConsumerWidget {
   final bool showBottomInfo;
   final Widget? inputActions;
   final bool isFrom;
@@ -18,7 +21,28 @@ class SwapAssetInput extends StatelessWidget {
       required this.isFrom});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final token = isFrom ? ref.watch(fromProvider) : ref.watch(toProvider);
+    final selectedValue = useState<String>("0");
+    selectedValue.value =
+        token?.selectedValue != null ? token!.selectedValue.toString() : "";
+
+    selectedValue.addListener(() {
+      try {
+        double val = double.parse(selectedValue.value);
+        if (token != null) {
+          var updatedToken = token.copyWith(
+            selectedValue: val,
+          );
+          ref.read(isFrom ? fromProvider.notifier : toProvider.notifier).state =
+              updatedToken;
+        }
+        print(selectedValue.value);
+      } catch (e) {
+        print(e);
+      }
+    });
+
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -28,6 +52,7 @@ class SwapAssetInput extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
+            valueNotifier: selectedValue.value == "" ? selectedValue : null,
             selectedBorder: Border.all(
               color: Colors.transparent,
               width: 1,
@@ -49,7 +74,7 @@ class SwapAssetInput extends StatelessWidget {
               bottom: 12,
             ),
             inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.]\d{0,4})?')),
             ],
           ),
           if (showBottomInfo)

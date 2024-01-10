@@ -16,7 +16,6 @@ class SelectAsset extends ConsumerWidget {
     final token = isFrom ? ref.watch(fromProvider) : ref.watch(toProvider);
     return PrimaryNomoButton(
       onPressed: () {
-        getAssetIcon("ETH");
         showDialog(
           context: context,
           builder: (context) => SelectAssetDialog(
