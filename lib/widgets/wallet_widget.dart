@@ -43,9 +43,6 @@ class WalletWidget extends StatelessWidget {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // TokenPicture(
-                      //   token: token,
-                      // ),
                       const SizedBox(
                         width: spacing,
                       ),

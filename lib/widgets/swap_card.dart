@@ -51,17 +51,6 @@ class SwapCard extends ConsumerWidget {
                     style: context.theme.typography.b3,
                   ),
                   NomoTextButton(
-                    text: "get Icon",
-                    padding: const EdgeInsets.all(8),
-                    textStyle: context.theme.typography.b3.copyWith(
-                      color: context.theme.colors.primary,
-                    ),
-                    onPressed: () async {
-                      String assetLocation = await getAssetIcon("ETH");
-                      print("This is the asset location: $assetLocation");
-                    },
-                  ),
-                  NomoTextButton(
                     text: "Clear All",
                     padding: const EdgeInsets.all(8),
                     textStyle: context.theme.typography.b3.copyWith(

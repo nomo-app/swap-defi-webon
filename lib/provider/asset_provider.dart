@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:js/js_util.dart';
+import 'package:swapping_webon/widgets/image_entity.dart';
 import 'package:swapping_webon/widgets/token.dart';
 import 'package:js/js.dart';
+import 'package:http/http.dart' as http;
 
 final visibleAssetsProvider =
     FutureProvider((ref) async => await getAssetsFromNomo());
@@ -21,17 +24,22 @@ Future<List<Token>> getAssetsFromNomo() async {
     resultAsMap.forEach((element) async {
       var balance = getProperty(element, 'balance');
       balance ??= await getBalance(getProperty(element, 'symbol'));
+      final token = Token(
+        name: getProperty(element, 'name'),
+        symbol: getProperty(element, 'symbol'),
+        decimals: getProperty(element, 'decimals'),
+        contractAddress: getProperty(element, 'contractAddress'),
+        balance: balance,
+        network: getProperty(element, 'network'),
+        receiveAddress: getProperty(element, 'receiveAddress'),
+      );
 
+      // final image = await getAssetIcon(token);
+      // token.assetIcon = image.small;
+
+      // print("this is the small image url: ${image.small}");
       tokens.add(
-        Token(
-          name: getProperty(element, 'name'),
-          symbol: getProperty(element, 'symbol'),
-          decimals: getProperty(element, 'decimals'),
-          contractAddress: getProperty(element, 'contractAddress'),
-          balance: balance,
-          network: getProperty(element, 'network'),
-          receiveAddress: getProperty(element, 'receiveAddress'),
-        ),
+        token,
       );
     });
 
@@ -56,23 +64,23 @@ class Args {
   external factory Args({String symbol});
 }
 
-@JS()
-external dynamic nomoGetAssetIcon(Args args);
+// @JS()
+// external dynamic nomoGetAssetIcon(Args args);
 
-Future<String> getAssetIcon(String symbol) async {
-  final jsAssetsPromise = nomoGetAssetIcon(Args(symbol: symbol));
+// Future<String> getAssetIcon(String symbol) async {
+//   final jsAssetsPromise = nomoGetAssetIcon(Args(symbol: symbol));
 
-  final futureAssetIcon = promiseToFuture(jsAssetsPromise);
-  try {
-    final result = await futureAssetIcon;
-    final assetLocationString = getProperty(result, 'small');
-    print(assetLocationString);
+//   final futureAssetIcon = promiseToFuture(jsAssetsPromise);
+//   try {
+//     final result = await futureAssetIcon;
+//     final assetLocationString = getProperty(result, 'small');
+//     print(assetLocationString);
 
-    return assetLocationString;
-  } catch (e) {
-    return 'no icon found: $e';
-  }
-}
+//     return assetLocationString;
+//   } catch (e) {
+//     return 'no icon found: $e';
+//   }
+// }
 
 @JS()
 external dynamic nomoGetBalance(Args args);
@@ -88,5 +96,26 @@ Future<String> getBalance(String symbol) async {
     return balanceString;
   } catch (e) {
     return 'no balance found: $e';
+  }
+}
+
+Future<ImageEntity> getAssetIcon(Token token) async {
+  try {
+    final endpoint =
+        'https://price.zeniq.services/v2/info/image/${token.contractAddress != null ? '${token.contractAddress}/${token.network}' : Token.getAssetName(token)}';
+
+    final response = await http.get(Uri.parse(endpoint),
+        headers: {"Content-Type": "application/json"});
+
+    final image = ImageEntity.fromJson(jsonDecode(response.body));
+
+    return image;
+  } catch (e) {
+    return const ImageEntity(
+      thumb: '',
+      small: '',
+      large: '',
+      isPending: false,
+    );
   }
 }

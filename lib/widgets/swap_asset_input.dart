@@ -27,20 +27,13 @@ class SwapAssetInput extends HookConsumerWidget {
     selectedValue.value =
         token?.selectedValue != null ? token!.selectedValue.toString() : "";
 
-    selectedValue.addListener(() {
-      try {
-        double val = double.parse(selectedValue.value);
-        if (token != null) {
-          var updatedToken = token.copyWith(
-            selectedValue: val,
-          );
-          ref.read(isFrom ? fromProvider.notifier : toProvider.notifier).state =
-              updatedToken;
-        }
+    useEffect(() {
+      selectedValue.addListener(() {
         print(selectedValue.value);
-      } catch (e) {
-        print(e);
-      }
+      });
+      return () {
+        selectedValue.removeListener(() {});
+      };
     });
 
     return DecoratedBox(
@@ -52,7 +45,7 @@ class SwapAssetInput extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
-            valueNotifier: selectedValue.value == "" ? selectedValue : null,
+            valueNotifier: selectedValue,
             selectedBorder: Border.all(
               color: Colors.transparent,
               width: 1,
