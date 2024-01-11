@@ -4,8 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:swapping_webon/widgets/token.dart';
 
 const _kExpand = Duration(milliseconds: 300);
 
@@ -14,6 +15,7 @@ class SwapAssetInput extends StatelessWidget {
   final Widget? inputActions;
   final bool isFrom;
   final ValueNotifier<String> textNotifier;
+  final bool showError;
 
   const SwapAssetInput({
     super.key,
@@ -21,6 +23,7 @@ class SwapAssetInput extends StatelessWidget {
     required this.inputActions,
     required this.isFrom,
     required this.textNotifier,
+    required this.showError,
   });
 
   @override
@@ -80,9 +83,49 @@ class SwapAssetInput extends StatelessWidget {
                 child: inputActions,
               ),
             ),
+          if (showError)
+            AnimatedContainer(
+              height: showBottomInfo ? 42 : 0,
+              duration: _kExpand,
+              decoration: BoxDecoration(
+                color: context.theme.colors.error,
+                borderRadius: const BorderRadius.vertical(
+                  bottom: Radius.circular(12),
+                ),
+              ),
+              padding: const EdgeInsets.only(
+                left: 12,
+                right: 12,
+                bottom: 8,
+              ),
+              child: AnimatedOpacity(
+                opacity: showBottomInfo ? 1 : 0,
+                duration: _kExpand,
+                child: const Column(
+                  children: [
+                    SizedBox(height: 8),
+                    ErrorMessage(),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
+  }
+
+  bool _isError(Token? token, ValueNotifier<String> textNotifier) {
+    final value = double.tryParse(textNotifier.value);
+
+    if (token != null && value != null && token.selectedValue != null) {
+      print("value: $value");
+      print("token.selectedValue: ${token.selectedValue}");
+      if (value > token.selectedValue!) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   BorderRadiusGeometry _kBorderRadius(bool showBottomInfo) {

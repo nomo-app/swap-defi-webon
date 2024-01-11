@@ -7,8 +7,13 @@ import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
+import 'package:swapping_webon/widgets/token.dart';
+
+final hasErrorProviderTo = StateProvider<bool>((ref) => false);
+final hasErrorProviderFrom = StateProvider<bool>((ref) => false);
 
 class SwapCard extends ConsumerStatefulWidget {
   const SwapCard({super.key});
@@ -39,22 +44,63 @@ class _SwapCardState extends ConsumerState<SwapCard> {
     super.dispose();
   }
 
+  //Todo: fix enter value not updating with floating point
+
   void fromChanged() {
-    ref.read(fromProvider.notifier).state?.selectedValue =
-        double.tryParse(fromTextNotifer.value);
-    print("from changed ${fromTextNotifer.value}");
+    final changedValue = double.tryParse(fromTextNotifer.value);
+
+    if (changedValue != null) {
+      final fromToken = ref.read(fromProvider);
+      if (fromToken != null) {
+        ref.read(hasErrorProviderFrom.notifier).state =
+            checkForError(fromToken, changedValue);
+
+        if (!ref.read(hasErrorProviderFrom)) {
+          ref.read(fromProvider.notifier).state =
+              fromToken.copyWith(selectedValue: changedValue);
+        }
+      }
+      print("from changed $changedValue");
+    }
+  }
+
+  bool checkForError(Token token, double value) {
+    if (token.balance != null) {
+      Amount amount = Amount.fromString(
+          value: token.balance ?? "0", decimals: token.decimals);
+
+      if (value > amount.displayValue) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void toChanged() {
-    ref.read(toProvider.notifier).state?.selectedValue =
-        double.tryParse(toTextNotifer.value);
-    print("to changed ${toTextNotifer.value}");
+    final changedValue = double.tryParse(toTextNotifer.value);
+
+    if (changedValue != null) {
+      final toToken = ref.read(toProvider);
+      if (toToken != null) {
+        ref.read(hasErrorProviderFrom.notifier).state =
+            checkForError(toToken, changedValue);
+
+        if (!ref.read(hasErrorProviderFrom)) {
+          ref.read(toProvider.notifier).state =
+              toToken.copyWith(selectedValue: changedValue);
+        }
+      }
+      print("from changed $changedValue");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final fromToken = ref.watch(fromProvider);
     final toToken = ref.watch(toProvider);
+
+    final hasErrorTo = ref.watch(hasErrorProviderTo);
+    final hasErrorFrom = ref.watch(hasErrorProviderFrom);
 
     bool showBottomInfoFrom = false;
     bool showBottomInfoTo = false;
@@ -116,6 +162,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 inputActions: InputActions(token: fromToken, isFrom: true),
                 isFrom: true,
                 textNotifier: fromTextNotifer,
+                showError: hasErrorFrom,
               ),
               const SizedBox(height: 32),
               Align(
@@ -152,6 +199,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 inputActions: InputActions(token: toToken, isFrom: false),
                 isFrom: false,
                 textNotifier: toTextNotifer,
+                showError: hasErrorTo,
               ),
               const SizedBox(height: 64),
               PrimaryNomoButton(
@@ -160,7 +208,12 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   color: context.theme.colors.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
-                onPressed: () => print("swap"),
+                onPressed: () {
+                  print(ref.read(fromProvider.notifier).state?.selectedValue ??
+                      "null");
+                  print(ref.read(toProvider.notifier).state?.selectedValue ??
+                      "null");
+                },
                 height: 48,
                 width: double.infinity,
                 elevation: 2,
