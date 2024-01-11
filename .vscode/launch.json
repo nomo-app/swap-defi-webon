@@ -10,13 +10,13 @@
             "type": "dart"
         },
         {
-            "name": "swapping_webon (port 3000)",
+            "name": "Flutter Web (port 3000)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug",
+            "program": "lib/main.dart",
             "args": [
                 "-d",
-                "web-server",
+                "chrome",
                 "--web-port",
                 "3000"
             ]

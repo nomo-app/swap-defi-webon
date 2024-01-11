@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/widgets/balance_display.dart';
-import 'package:swapping_webon/widgets/price_display.dart';
 import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/widgets/token_picture.dart';
 
-class WalletWidget extends StatelessWidget {
+class WalletWidget extends ConsumerWidget {
   final Token token;
   final void Function()? onTap;
   //TokenEntity get token => tokenArgs.token;
@@ -18,7 +19,7 @@ class WalletWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
       child: Shimmer(
         child: Material(
@@ -43,6 +44,10 @@ class WalletWidget extends StatelessWidget {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      TokenPicture(
+                        token: token,
+                        size: pictureSize,
+                      ),
                       const SizedBox(
                         width: spacing,
                       ),

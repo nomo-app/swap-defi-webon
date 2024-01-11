@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:js/js_util.dart';
+import 'package:swapping_webon/provider/image_repository.dart';
 import 'package:swapping_webon/widgets/image_entity.dart';
 import 'package:swapping_webon/widgets/token.dart';
 import 'package:js/js.dart';
@@ -99,23 +100,49 @@ Future<String> getBalance(String symbol) async {
   }
 }
 
-Future<ImageEntity> getAssetIcon(Token token) async {
-  try {
-    final endpoint =
-        'https://price.zeniq.services/v2/info/image/${token.contractAddress != null ? '${token.contractAddress}/${token.network}' : Token.getAssetName(token)}';
+// Future<ImageEntity> getAssetIcon(Token token) async {
+//   try {
+//     final endpoint =
+//         'https://price.zeniq.services/v2/info/image/${token.contractAddress != null ? '${token.contractAddress}/${token.network}' : Token.getAssetName(token)}';
 
-    final response = await http.get(Uri.parse(endpoint),
-        headers: {"Content-Type": "application/json"});
+//     final response = await http.get(Uri.parse(endpoint),
+//         headers: {"Content-Type": "application/json"});
 
-    final image = ImageEntity.fromJson(jsonDecode(response.body));
+//     final image = ImageEntity.fromJson(jsonDecode(response.body));
 
-    return image;
-  } catch (e) {
-    return const ImageEntity(
-      thumb: '',
-      small: '',
-      large: '',
-      isPending: false,
-    );
+//     return image;
+//   } catch (e) {
+//     return const ImageEntity(
+//       thumb: '',
+//       small: '',
+//       large: '',
+//       isPending: false,
+//     );
+//   }
+// }
+final imageProvider =
+    StateNotifierProvider.family<ImageNotifier, AsyncValue<ImageEntity>, Token>(
+        (ref, token) {
+  return ImageNotifier(token: token);
+});
+
+class ImageNotifier extends StateNotifier<AsyncValue<ImageEntity>> {
+  final Token token;
+
+  String get key => "image_${token.name}_${token.symbol}";
+
+  ImageNotifier({required this.token}) : super(AsyncLoading()) {
+    loadImage();
+  }
+
+  void loadImage({String? network}) async {
+    try {
+      final result = await ImageRepository.getImage(
+        token,
+      );
+      state = AsyncData(result);
+    } catch (e, s) {
+      state = AsyncError(e, s);
+    }
   }
 }
