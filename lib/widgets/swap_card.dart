@@ -13,6 +13,7 @@ import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
 final hasErrorProviderTo = StateProvider<bool>((ref) => false);
+
 final hasErrorProviderFrom = StateProvider<bool>((ref) => false);
 
 class SwapCard extends ConsumerStatefulWidget {
@@ -25,24 +26,6 @@ class SwapCard extends ConsumerStatefulWidget {
 class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
-
-  @override
-  void initState() {
-    fromTextNotifer.addListener(fromChanged);
-    toTextNotifer.addListener(toChanged);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    fromTextNotifer
-      ..removeListener(fromChanged)
-      ..dispose();
-    toTextNotifer
-      ..removeListener(toChanged)
-      ..dispose();
-    super.dispose();
-  }
 
   //Todo: fix enter value not updating with floating point
 
@@ -74,24 +57,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       }
     }
     return false;
-  }
-
-  void toChanged() {
-    final changedValue = double.tryParse(toTextNotifer.value);
-
-    if (changedValue != null) {
-      final toToken = ref.read(toProvider);
-      if (toToken != null) {
-        ref.read(hasErrorProviderFrom.notifier).state =
-            checkForError(toToken, changedValue);
-
-        if (!ref.read(hasErrorProviderFrom)) {
-          ref.read(toProvider.notifier).state =
-              toToken.copyWith(selectedValue: changedValue);
-        }
-      }
-      print("from changed $changedValue");
-    }
   }
 
   @override

@@ -6,11 +6,12 @@ import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
+import 'package:swapping_webon/widgets/swap_card.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
 const _kExpand = Duration(milliseconds: 300);
 
-class SwapAssetInput extends StatelessWidget {
+class SwapAssetInput extends ConsumerWidget {
   final bool showBottomInfo;
   final Widget? inputActions;
   final bool isFrom;
@@ -27,7 +28,7 @@ class SwapAssetInput extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -38,6 +39,23 @@ class SwapAssetInput extends StatelessWidget {
         children: [
           NomoInput(
             valueNotifier: textNotifier,
+            onChanged: (value) {
+              final changedValue = double.tryParse(value);
+
+              if (changedValue != null) {
+                final fromToken = ref.read(fromProvider);
+                if (fromToken != null) {
+                  //    ref.read(hasErrorProviderFrom.notifier).state =
+                  //       checkForError(fromToken, changedValue);
+
+                  if (!ref.read(hasErrorProviderFrom)) {
+                    ref.read(fromProvider.notifier).state =
+                        fromToken.copyWith(selectedValue: changedValue);
+                  }
+                }
+                print("from changed $changedValue");
+              }
+            },
             selectedBorder: Border.all(
               color: Colors.transparent,
               width: 1,
