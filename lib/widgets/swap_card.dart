@@ -22,10 +22,33 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   final toTextNotifer = ValueNotifier('');
 
   @override
+  void initState() {
+    fromTextNotifer.addListener(fromChanged);
+    toTextNotifer.addListener(toChanged);
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    fromTextNotifer.dispose();
-    toTextNotifer.dispose();
+    fromTextNotifer
+      ..removeListener(fromChanged)
+      ..dispose();
+    toTextNotifer
+      ..removeListener(toChanged)
+      ..dispose();
     super.dispose();
+  }
+
+  void fromChanged() {
+    ref.read(fromProvider.notifier).state?.selectedValue =
+        double.tryParse(fromTextNotifer.value);
+    print("from changed ${fromTextNotifer.value}");
+  }
+
+  void toChanged() {
+    ref.read(toProvider.notifier).state?.selectedValue =
+        double.tryParse(toTextNotifer.value);
+    print("to changed ${toTextNotifer.value}");
   }
 
   @override
@@ -38,10 +61,17 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
     if (fromToken != null) {
       showBottomInfoFrom = true;
+
+      if (fromToken.selectedValue != null) {
+        fromTextNotifer.value = fromToken.selectedValue.toString();
+      }
     }
 
     if (toToken != null) {
       showBottomInfoTo = true;
+      if (toToken.selectedValue != null) {
+        toTextNotifer.value = toToken.selectedValue.toString();
+      }
     }
 
     return NomoCard(
@@ -104,6 +134,11 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   onPressed: () {
                     ref.read(fromProvider.notifier).state = toToken;
                     ref.read(toProvider.notifier).state = fromToken;
+                    final fromValueNotifier = fromTextNotifer.value;
+                    final toValueNotifier = toTextNotifer.value;
+
+                    toTextNotifer.value = fromValueNotifier;
+                    fromTextNotifer.value = toValueNotifier;
                   },
                 ),
               ),
