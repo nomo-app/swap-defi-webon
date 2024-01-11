@@ -10,11 +10,26 @@ import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 
-class SwapCard extends ConsumerWidget {
+class SwapCard extends ConsumerStatefulWidget {
   const SwapCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SwapCard> createState() => _SwapCardState();
+}
+
+class _SwapCardState extends ConsumerState<SwapCard> {
+  final fromTextNotifer = ValueNotifier('');
+  final toTextNotifer = ValueNotifier('');
+
+  @override
+  void dispose() {
+    fromTextNotifer.dispose();
+    toTextNotifer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final fromToken = ref.watch(fromProvider);
     final toToken = ref.watch(toProvider);
 
@@ -59,6 +74,8 @@ class SwapCard extends ConsumerWidget {
                     onPressed: () {
                       ref.read(fromProvider.notifier).state = null;
                       ref.read(toProvider.notifier).state = null;
+                      toTextNotifer.value = "";
+                      fromTextNotifer.value = "";
                     },
                   )
                 ],
@@ -68,6 +85,7 @@ class SwapCard extends ConsumerWidget {
                 showBottomInfo: showBottomInfoFrom,
                 inputActions: InputActions(token: fromToken, isFrom: true),
                 isFrom: true,
+                textNotifier: fromTextNotifer,
               ),
               const SizedBox(height: 32),
               Align(
@@ -98,6 +116,7 @@ class SwapCard extends ConsumerWidget {
                 showBottomInfo: showBottomInfoTo,
                 inputActions: InputActions(token: toToken, isFrom: false),
                 isFrom: false,
+                textNotifier: toTextNotifer,
               ),
               const SizedBox(height: 64),
               PrimaryNomoButton(

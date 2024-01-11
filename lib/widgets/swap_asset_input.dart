@@ -9,30 +9,22 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 const _kExpand = Duration(milliseconds: 300);
 
-class SwapAssetInput extends HookConsumerWidget {
+class SwapAssetInput extends StatelessWidget {
   final bool showBottomInfo;
   final Widget? inputActions;
   final bool isFrom;
+  final ValueNotifier<String> textNotifier;
 
-  const SwapAssetInput(
-      {super.key,
-      required this.showBottomInfo,
-      required this.inputActions,
-      required this.isFrom});
+  const SwapAssetInput({
+    super.key,
+    required this.showBottomInfo,
+    required this.inputActions,
+    required this.isFrom,
+    required this.textNotifier,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final token = isFrom ? ref.watch(fromProvider) : ref.watch(toProvider);
-    final selectedValue = useState<String>("0");
-    // selectedValue.value =
-    //     token?.selectedValue != null ? token!.selectedValue.toString() : "";
-
-    // useEffect(() {
-    //   selectedValue.addListener(() {
-    //     print(selectedValue.value);
-    //   });
-    // });
-
+  Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -42,7 +34,7 @@ class SwapAssetInput extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
-            //valueNotifier: selectedValue,
+            valueNotifier: textNotifier,
             selectedBorder: Border.all(
               color: Colors.transparent,
               width: 1,

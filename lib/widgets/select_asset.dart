@@ -6,6 +6,7 @@ import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/widgets/select_asset_dialog.dart';
 import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/widgets/token_picture.dart';
 
 class SelectAsset extends ConsumerWidget {
   final bool isFrom;
@@ -46,7 +47,16 @@ class SelectAssetButtonData extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         token != null
-            ? NomoText(token!.symbol)
+            ? Row(
+                children: [
+                  TokenPicture(
+                    token: token!,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 8),
+                  NomoText(token!.symbol, fontSize: 18, minFontSize: 12),
+                ],
+              )
             : const NomoText(
                 fontSize: 18,
                 minFontSize: 12,
