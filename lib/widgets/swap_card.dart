@@ -6,17 +6,17 @@ import 'package:nomo_ui_kit/components/buttons/text/nomo_text_button.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/swapinfo.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-final hasErrorProviderTo = StateProvider<bool>((ref) => false);
+const textPrecision = 5;
 
-final hasErrorProviderFrom = StateProvider<bool>((ref) => false);
-
-class SwapCard extends ConsumerStatefulWidget {
+class SwapCard extends StatefulHookConsumerWidget {
   const SwapCard({super.key});
 
   @override
@@ -30,21 +30,21 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   //Todo: fix enter value not updating with floating point
 
   void fromChanged() {
-    final changedValue = double.tryParse(fromTextNotifer.value);
+     final changedValue = double.tryParse(fromTextNotifer.value);
 
-    if (changedValue != null) {
-      final fromToken = ref.read(fromProvider);
-      if (fromToken != null) {
-        ref.read(hasErrorProviderFrom.notifier).state =
-            checkForError(fromToken, changedValue);
+    // if (changedValue != null) {
+    //   final fromToken = ref.read(fromProvider);
+    //   if (fromToken != null) {
+    //     ref.read(hasErrorProviderFrom.notifier).state =
+    //         checkForError(fromToken, changedValue);
 
-        if (!ref.read(hasErrorProviderFrom)) {
-          ref.read(fromProvider.notifier).state =
-              fromToken.copyWith(selectedValue: changedValue);
-        }
-      }
+    //     if (!ref.read(hasErrorProviderFrom)) {
+    //       ref.read(fromProvider.notifier).state =
+    //           fromToken.copyWith(selectedValue: changedValue);
+    //     }
+    //   }
       print("from changed $changedValue");
-    }
+    // }
   }
 
   bool checkForError(Token token, double value) {
@@ -61,29 +61,29 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
   @override
   Widget build(BuildContext context) {
-    final fromToken = ref.watch(fromProvider);
-    final toToken = ref.watch(toProvider);
+    final swapInfo = ref.watch(swapInfoProvider);
+    // final swapPreview = ref.watch(swapPreviewProvider);
+    // final swapPreviewNotifier = ref.read(swapPreviewProvider.notifier);
+    // final swapPreviewLoading = swapPreview.isRefreshing ||
+    //     swapPreview.isLoading ||
+    //     swapPreview.valueOrNull?.amount == -2;
+    // final fromLoading = swapPreviewLoading && !swapPreviewNotifier.useFrom;
+    // final toLoading = swapPreviewLoading && swapPreviewNotifier.useFrom;
 
-    final hasErrorTo = ref.watch(hasErrorProviderTo);
-    final hasErrorFrom = ref.watch(hasErrorProviderFrom);
+     useEffect(
+      () {
+        fromTextNotifer.value = swapInfo.fromIsNullToken
+            ? ""
+            : swapInfo.fromAmount.getDisplayString(textPrecision);
 
-    bool showBottomInfoFrom = false;
-    bool showBottomInfoTo = false;
+        toTextNotifer.value = swapInfo.toIsNullToken
+            ? ""
+            : swapInfo.toAmount.getDisplayString(textPrecision);
 
-    if (fromToken != null) {
-      showBottomInfoFrom = true;
-
-      if (fromToken.selectedValue != null) {
-        fromTextNotifer.value = fromToken.selectedValue.toString();
-      }
-    }
-
-    if (toToken != null) {
-      showBottomInfoTo = true;
-      if (toToken.selectedValue != null) {
-        toTextNotifer.value = toToken.selectedValue.toString();
-      }
-    }
+        return null;
+      },
+      [swapInfo.from, swapInfo.to],
+    );
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
@@ -113,8 +113,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                       color: context.theme.colors.error,
                     ),
                     onPressed: () {
-                      ref.read(fromProvider.notifier).state = null;
-                      ref.read(toProvider.notifier).state = null;
+                      ref.read(swapInfoProvider.notifier).clearAll();
                       toTextNotifer.value = "";
                       fromTextNotifer.value = "";
                     },
@@ -123,11 +122,10 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                showBottomInfo: showBottomInfoFrom,
-                inputActions: InputActions(token: fromToken, isFrom: true),
+                inputActions: const InputActions(isFrom: true),
                 isFrom: true,
                 textNotifier: fromTextNotifer,
-                showError: hasErrorFrom,
+                showError: false,
               ),
               const SizedBox(height: 32),
               Align(
@@ -144,13 +142,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     color: context.theme.colors.onPrimary,
                   ),
                   onPressed: () {
-                    ref.read(fromProvider.notifier).state = toToken;
-                    ref.read(toProvider.notifier).state = fromToken;
-                    final fromValueNotifier = fromTextNotifer.value;
-                    final toValueNotifier = toTextNotifer.value;
-
-                    toTextNotifer.value = fromValueNotifier;
-                    fromTextNotifer.value = toValueNotifier;
+                    ref.read(swapInfoProvider.notifier).switchFromTo();
                   },
                 ),
               ),
@@ -160,11 +152,10 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                showBottomInfo: showBottomInfoTo,
-                inputActions: InputActions(token: toToken, isFrom: false),
+                inputActions: const InputActions(isFrom: false),
                 isFrom: false,
                 textNotifier: toTextNotifer,
-                showError: hasErrorTo,
+                showError: false,
               ),
               const SizedBox(height: 64),
               PrimaryNomoButton(
@@ -174,10 +165,10 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () {
-                  print(ref.read(fromProvider.notifier).state?.selectedValue ??
-                      "null");
-                  print(ref.read(toProvider.notifier).state?.selectedValue ??
-                      "null");
+                  // print(ref.read(fromProvider.notifier).state?.selectedValue ??
+                  //     "null");
+                  // print(ref.read(toProvider.notifier).state?.selectedValue ??
+                  //     "null");
                 },
                 height: 48,
                 width: double.infinity,

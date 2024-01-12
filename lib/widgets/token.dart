@@ -1,15 +1,13 @@
 class Token {
-  String? name;
-  String symbol;
-  int decimals;
-  String? contractAddress;
-  String? balance;
-  String? network;
-  String? receiveAddress;
-  double? selectedValue;
-  String? assetIcon;
+ final String? name;
+ final String symbol;
+ final int decimals;
+ final String? contractAddress;
+ final String? balance;
+ final String? network;
+ final String? receiveAddress;
 
-  Token({
+  const Token({
     required this.name,
     required this.symbol,
     required this.decimals,
@@ -17,8 +15,6 @@ class Token {
     required this.balance,
     required this.network,
     required this.receiveAddress,
-    this.assetIcon,
-    this.selectedValue,
   });
 
   Token copyWith({
@@ -40,8 +36,6 @@ class Token {
       balance: balance ?? this.balance,
       network: network ?? this.network,
       receiveAddress: receiveAddress ?? this.receiveAddress,
-      assetIcon: assetIcon ?? this.assetIcon,
-      selectedValue: selectedValue ?? this.selectedValue,
     );
   }
 

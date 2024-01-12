@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/select_asset_dialog.dart';
 import 'package:swapping_webon/widgets/token.dart';
 import 'package:swapping_webon/widgets/token_picture.dart';
@@ -14,7 +14,7 @@ class SelectAsset extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final token = isFrom ? ref.watch(fromProvider) : ref.watch(toProvider);
+    final token = ref.watch(swapInfoProvider);
     return PrimaryNomoButton(
       onPressed: () {
         showDialog(
@@ -27,17 +27,17 @@ class SelectAsset extends ConsumerWidget {
       height: 40,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       foregroundColor: context.theme.colors.onPrimary,
-      child: SelectAssetButtonData(token: token),
+      child: SelectAssetButtonData(token: isFrom ? token.from : token.to),
     );
   }
 }
 
 class SelectAssetButtonData extends StatelessWidget {
-  final Token? token;
+  final Token token;
 
   const SelectAssetButtonData({
     super.key,
-    this.token,
+    required this.token,
   });
 
   @override
@@ -46,15 +46,15 @@ class SelectAssetButtonData extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        token != null
+        token.symbol != ''
             ? Row(
                 children: [
                   TokenPicture(
-                    token: token!,
+                    token: token,
                     size: 28,
                   ),
                   const SizedBox(width: 8),
-                  NomoText(token!.symbol, fontSize: 18, minFontSize: 12),
+                  NomoText(token.symbol, fontSize: 18, minFontSize: 12),
                 ],
               )
             : const NomoText(

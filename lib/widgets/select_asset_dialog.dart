@@ -5,6 +5,7 @@ import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/provider/filter_provider.dart';
+import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
 
 class SelectAssetDialog extends ConsumerWidget {
@@ -45,9 +46,9 @@ class SelectAssetDialog extends ConsumerWidget {
                       onTap: () {
                         Navigator.of(context).pop(token);
                         if (isFrom) {
-                          ref.read(fromProvider.notifier).state = token;
+                         ref.read(swapInfoProvider.notifier).setFrom(token); 
                         } else {
-                          ref.read(toProvider.notifier).state = token;
+                         ref.read(swapInfoProvider.notifier).setTo(token);
                         }
                       },
                     );

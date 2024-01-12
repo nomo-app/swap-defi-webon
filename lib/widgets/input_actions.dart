@@ -4,18 +4,20 @@ import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
 class InputActions extends ConsumerWidget {
-  final Token? token;
   final bool isFrom;
-  const InputActions({required this.token, required this.isFrom, super.key});
+  const InputActions({required this.isFrom, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final amount = Amount.fromString(
-        value: token?.balance ?? "0", decimals: token?.decimals ?? 0);
+    final token = ref.watch(swapInfoProvider);
+    final balance = isFrom ? token.from.balance : token.to.balance;
+    final decimals = isFrom ? token.from.decimals : token.to.decimals;
+    final amount = Amount.fromString(value: balance ?? "0", decimals: decimals);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

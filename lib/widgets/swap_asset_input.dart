@@ -3,24 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
-import 'package:swapping_webon/widgets/swap_card.dart';
-import 'package:swapping_webon/widgets/token.dart';
 
 const _kExpand = Duration(milliseconds: 300);
 
 class SwapAssetInput extends ConsumerWidget {
-  final bool showBottomInfo;
-  final Widget? inputActions;
+  final Widget inputActions;
   final bool isFrom;
   final ValueNotifier<String> textNotifier;
   final bool showError;
 
   const SwapAssetInput({
     super.key,
-    required this.showBottomInfo,
     required this.inputActions,
     required this.isFrom,
     required this.textNotifier,
@@ -29,6 +25,11 @@ class SwapAssetInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final tokenInfo = ref.watch(swapInfoProvider);
+    final tokenSymbol = isFrom ? tokenInfo.from.symbol : tokenInfo.to.symbol;
+    final showBottomInfo = tokenSymbol != ''; 
+
+    
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -40,21 +41,21 @@ class SwapAssetInput extends ConsumerWidget {
           NomoInput(
             valueNotifier: textNotifier,
             onChanged: (value) {
-              final changedValue = double.tryParse(value);
+              // final changedValue = double.tryParse(value);
 
-              if (changedValue != null) {
-                final fromToken = ref.read(fromProvider);
-                if (fromToken != null) {
-                  //    ref.read(hasErrorProviderFrom.notifier).state =
-                  //       checkForError(fromToken, changedValue);
+              // if (changedValue != null) {
+              //   final fromToken = ref.read(fromProvider);
+              //   if (fromToken != null) {
+              //     //    ref.read(hasErrorProviderFrom.notifier).state =
+              //     //       checkForError(fromToken, changedValue);
 
-                  if (!ref.read(hasErrorProviderFrom)) {
-                    ref.read(fromProvider.notifier).state =
-                        fromToken.copyWith(selectedValue: changedValue);
-                  }
-                }
-                print("from changed $changedValue");
-              }
+              //     if (!ref.read(hasErrorProviderFrom)) {
+              //       ref.read(fromProvider.notifier).state =
+              //           fromToken.copyWith(selectedValue: changedValue);
+              //     }
+              //   }
+                print("from changed $value");
+              // }
             },
             selectedBorder: Border.all(
               color: Colors.transparent,
@@ -117,7 +118,7 @@ class SwapAssetInput extends ConsumerWidget {
                 bottom: 8,
               ),
               child: AnimatedOpacity(
-                opacity: showBottomInfo ? 1 : 0,
+                opacity: showBottomInfo? 1 : 0,
                 duration: _kExpand,
                 child: const Column(
                   children: [
@@ -130,20 +131,6 @@ class SwapAssetInput extends ConsumerWidget {
         ],
       ),
     );
-  }
-
-  bool _isError(Token? token, ValueNotifier<String> textNotifier) {
-    final value = double.tryParse(textNotifier.value);
-
-    if (token != null && value != null && token.selectedValue != null) {
-      print("value: $value");
-      print("token.selectedValue: ${token.selectedValue}");
-      if (value > token.selectedValue!) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   BorderRadiusGeometry _kBorderRadius(bool showBottomInfo) {
