@@ -26,7 +26,10 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
 
-
+@override
+  void initState() {
+        super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     final swapInfo = ref.watch(swapInfoProvider);
@@ -41,6 +44,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
  useEffect(
       () {
+        Future.microtask(() {
+ 
         fromTextNotifer.value = swapInfo.fromIsNullToken
             ? ""
             : swapInfo.fromAmount.getDisplayString(textPrecision);
@@ -49,9 +54,11 @@ class _SwapCardState extends ConsumerState<SwapCard> {
             ? ""
             : swapInfo.toAmount.getDisplayString(textPrecision);
 
+        },);
+
         return null;
       },
-      [swapInfo.from, swapInfo.to],
+      [swapInfo.to, swapInfo.from],
     );
     
 
@@ -92,7 +99,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                inputActions: const InputActions(isFrom: true),
+                inputActions:  InputActions(isFrom: true,textNotifier: fromTextNotifer, ),
                 isFrom: true,
                 textNotifier: fromTextNotifer,
               ),
@@ -121,7 +128,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                inputActions: const InputActions(isFrom: false),
+                inputActions:  InputActions(isFrom: false, textNotifier: toTextNotifer,),
                 isFrom: false,
                 textNotifier: toTextNotifer,
               ),

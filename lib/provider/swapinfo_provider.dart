@@ -1,11 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
+
 class SwapInfoNotifier extends StateNotifier<SwapInfo> {
   final Ref ref;
+ 
 
   SwapInfoNotifier(this.ref) : super(SwapInfo.zero());
 
@@ -17,6 +20,8 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
     }
     state = state.copyWith(from: from);
   }
+
+
 
   // void _loadBalanceIfNull(Token token) {
   //   if (token == nullToken) return;
@@ -35,6 +40,7 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
     }
     state = state.copyWith(to: to);
   }
+
 
   get fromToken => state.from;
   get toToken => state.to;
@@ -60,6 +66,8 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
 
 final swapInfoProvider =
     StateNotifierProvider<SwapInfoNotifier, SwapInfo>((ref) {
+
+
   return SwapInfoNotifier(ref);
 });
 

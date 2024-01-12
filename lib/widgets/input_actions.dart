@@ -11,7 +11,8 @@ import 'package:swapping_webon/widgets/token.dart';
 
 class InputActions extends ConsumerWidget {
   final bool isFrom;
-  const InputActions({required this.isFrom, super.key});
+  final ValueNotifier<String> textNotifier;
+  const InputActions({ required this.textNotifier,required this.isFrom, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,28 +39,28 @@ class InputActions extends ConsumerWidget {
           children: [
             InputActionButton(
               onPressed: () {
-                selectAmount(0.25, ref, isFrom, token);
+                selectAmount(0.25, ref, isFrom, token, textNotifier);
               },
               text: "25%",
             ),
             const SizedBox(width: 8),
             InputActionButton(
               onPressed: () {
-                selectAmount(0.5, ref, isFrom, token);
+                selectAmount(0.5, ref, isFrom, token, textNotifier);
               },
               text: "50%",
             ),
             const SizedBox(width: 8),
             InputActionButton(
               onPressed: () {
-                selectAmount(0.75, ref, isFrom, token);
+                selectAmount(0.75, ref, isFrom, token, textNotifier);
               },
               text: "75%",
             ),
             const SizedBox(width: 8),
             InputActionButton(
               onPressed: () {
-                selectAmount(1, ref, isFrom, token);
+                selectAmount(1, ref, isFrom, token, textNotifier);
               },
               text: "max",
             ),
@@ -69,15 +70,18 @@ class InputActions extends ConsumerWidget {
     );
   }
 
-  selectAmount(double percentage, WidgetRef ref, bool isFrom, Token token) {
+  selectAmount(double percentage, WidgetRef ref, bool isFrom, Token token, ValueNotifier<String> textNotifier) {
     final amount = Amount.fromString(
         value: token.balance ?? "0", decimals: token.decimals);
     final valueToSet = BigNumbers(token.decimals).multiplyBI(amount.value, percentage);
-
+final amountToSet = Amount(value: valueToSet, decimals: token.decimals);
     if (isFrom) {
       ref.read(swapInfoProvider.notifier).setFromAmount(valueToSet);
+      
+      textNotifier.value = amountToSet.displayValue.toString();
     } else {
       ref.read(swapInfoProvider.notifier).setToAmount(valueToSet);
+      textNotifier.value = amountToSet.displayValue.toString();
     }
   }
 }
