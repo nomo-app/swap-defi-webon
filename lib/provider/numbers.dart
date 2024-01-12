@@ -7,6 +7,14 @@ class BigNumbers {
     this.decimalPlaces,
   );
 
+  BigInt? convertInputDoubleToBI(double? amount) {
+  if (amount == null) {
+    return null;
+  }
+  BigInt amountBI = BigInt.from(amount * pow(10, decimalPlaces));
+  return amountBI;
+}
+
   double add(num num1, num num2) {
     final _num1 = _shiftLeft(num1, decimalPlaces);
     final _num2 = _shiftLeft(num2, decimalPlaces);

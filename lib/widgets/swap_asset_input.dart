@@ -1,8 +1,11 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
@@ -13,14 +16,14 @@ class SwapAssetInput extends ConsumerWidget {
   final Widget inputActions;
   final bool isFrom;
   final ValueNotifier<String> textNotifier;
-  final bool showError;
+  
 
   const SwapAssetInput({
     super.key,
     required this.inputActions,
     required this.isFrom,
     required this.textNotifier,
-    required this.showError,
+    
   });
 
   @override
@@ -28,6 +31,8 @@ class SwapAssetInput extends ConsumerWidget {
     final tokenInfo = ref.watch(swapInfoProvider);
     final tokenSymbol = isFrom ? tokenInfo.from.symbol : tokenInfo.to.symbol;
     final showBottomInfo = tokenSymbol != ''; 
+
+    final showError = false;
 
     
     return DecoratedBox(
@@ -41,21 +46,20 @@ class SwapAssetInput extends ConsumerWidget {
           NomoInput(
             valueNotifier: textNotifier,
             onChanged: (value) {
-              // final changedValue = double.tryParse(value);
+              final changedValue = double.tryParse(value);
 
-              // if (changedValue != null) {
-              //   final fromToken = ref.read(fromProvider);
-              //   if (fromToken != null) {
-              //     //    ref.read(hasErrorProviderFrom.notifier).state =
-              //     //       checkForError(fromToken, changedValue);
+              final bigNumberToSet = BigNumbers(isFrom?tokenInfo.from.decimals:tokenInfo.to.decimals).convertInputDoubleToBI(changedValue);
+              print("This is the BigNumber $bigNumberToSet");
+              
+              if (bigNumberToSet != null) {
+                if (isFrom) {
+                  ref.read(swapInfoProvider.notifier).setFromAmount(bigNumberToSet);
+                  print("set the number to token from ${ref.read(swapInfoProvider).fromAmount.value}");
+                } else {
+                  ref.read(swapInfoProvider.notifier).setToAmount(bigNumberToSet);
+                }
+              }
 
-              //     if (!ref.read(hasErrorProviderFrom)) {
-              //       ref.read(fromProvider.notifier).state =
-              //           fromToken.copyWith(selectedValue: changedValue);
-              //     }
-              //   }
-                print("from changed $value");
-              // }
             },
             selectedBorder: Border.all(
               color: Colors.transparent,

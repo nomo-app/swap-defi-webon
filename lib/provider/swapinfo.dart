@@ -41,6 +41,7 @@ class SwapInfo{
 
   bool fromAmountIsValid(BigInt balance) =>
       (fromAmount.value > BigInt.zero && fromAmount.value <= balance);
+  
 
   bool get fromToValid => from != nullToken && to != nullToken;
 

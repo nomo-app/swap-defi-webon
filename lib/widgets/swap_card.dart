@@ -10,7 +10,6 @@ import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
-import 'package:swapping_webon/widgets/token.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -27,37 +26,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
 
-  //Todo: fix enter value not updating with floating point
-
-  void fromChanged() {
-     final changedValue = double.tryParse(fromTextNotifer.value);
-
-    // if (changedValue != null) {
-    //   final fromToken = ref.read(fromProvider);
-    //   if (fromToken != null) {
-    //     ref.read(hasErrorProviderFrom.notifier).state =
-    //         checkForError(fromToken, changedValue);
-
-    //     if (!ref.read(hasErrorProviderFrom)) {
-    //       ref.read(fromProvider.notifier).state =
-    //           fromToken.copyWith(selectedValue: changedValue);
-    //     }
-    //   }
-      print("from changed $changedValue");
-    // }
-  }
-
-  bool checkForError(Token token, double value) {
-    if (token.balance != null) {
-      Amount amount = Amount.fromString(
-          value: token.balance ?? "0", decimals: token.decimals);
-
-      if (value > amount.displayValue) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +38,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
     // final fromLoading = swapPreviewLoading && !swapPreviewNotifier.useFrom;
     // final toLoading = swapPreviewLoading && swapPreviewNotifier.useFrom;
 
-     useEffect(
+
+ useEffect(
       () {
         fromTextNotifer.value = swapInfo.fromIsNullToken
             ? ""
@@ -84,6 +53,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       },
       [swapInfo.from, swapInfo.to],
     );
+    
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
@@ -125,7 +95,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 inputActions: const InputActions(isFrom: true),
                 isFrom: true,
                 textNotifier: fromTextNotifer,
-                showError: false,
               ),
               const SizedBox(height: 32),
               Align(
@@ -155,7 +124,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 inputActions: const InputActions(isFrom: false),
                 isFrom: false,
                 textNotifier: toTextNotifer,
-                showError: false,
               ),
               const SizedBox(height: 64),
               PrimaryNomoButton(
