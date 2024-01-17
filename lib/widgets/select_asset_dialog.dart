@@ -3,8 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:nomo_ui_kit/utils/layout_extensions.dart';
-import 'package:swapping_webon/provider/js_communication.dart';
 import 'package:swapping_webon/provider/filter_provider.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
@@ -40,6 +38,13 @@ class SelectAssetDialog extends ConsumerWidget {
       assert(api != null, "No api found for $selectedAsset");
     }
 
+    ValueNotifier<String> valueNotifier = ValueNotifier("");
+
+    valueNotifier.addListener(() {
+      ref.read(filterProvider.notifier).state =
+          valueNotifier.value.toLowerCase();
+    });
+
     return NomoDialog(
       backgroundColor: context.theme.colors.surface,
       titleStyle: context.theme.typography.h2,
@@ -54,7 +59,9 @@ class SelectAssetDialog extends ConsumerWidget {
             const SliverToBoxAdapter(
               child: Divider(height: 12, color: Colors.transparent),
             ),
-            const SearchField(),
+            SearchField(
+              valueNotifier: valueNotifier,
+            ),
             const SliverToBoxAdapter(
               child: Divider(height: 12, color: Colors.transparent),
             ),
@@ -98,7 +105,10 @@ class SelectAssetDialog extends ConsumerWidget {
 }
 
 class SearchField extends ConsumerWidget {
+  final ValueNotifier<String> valueNotifier;
+
   const SearchField({
+    required this.valueNotifier,
     super.key,
   });
 
@@ -116,6 +126,7 @@ class SearchField extends ConsumerWidget {
       title: Padding(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
         child: NomoInput(
+          valueNotifier: valueNotifier,
           background: context.theme.colors.surface,
           margin: const EdgeInsets.symmetric(
             horizontal: 16,
