@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
@@ -19,15 +18,6 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
     state = state.copyWith(from: from);
   }
 
-  // void _loadBalanceIfNull(Token token) {
-  //   if (token == nullToken) return;
-  //   final balance = token.balance;
-  //   if (balance == null) {
-
-  //     ref.read(balanceServiceProvider).fetchSingle(token, feedBack: false);
-  //   }
-  // }
-
   void setTo(Token to) {
     //   _loadBalanceIfNull(to);
     if (!state.toIsNullToken) {
@@ -44,8 +34,6 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
 
   void setFromAmount(BigInt amount) => state = state.copyWith(
         fromAmount: amount,
-        // isSweep:
-        //     amount >= BigNumbers(state.from.decimals).multiplyBI(balance, 0.95),
       );
 
   void setToAmount(BigInt amount) => state = state.copyWith(toAmount: amount);
@@ -62,23 +50,6 @@ final swapInfoProvider =
     StateNotifierProvider<SwapInfoNotifier, SwapInfo>((ref) {
   return SwapInfoNotifier(ref);
 });
-
-///
-/// Used for Balance State
-///
-// final balanceValidProvider = StateProvider.family<bool, bool>((ref, allowZero) {
-//   final token = ref.watch(swapInfoProvider.select((value) => value.from));
-
-//   var balance;
-//   try {
-//     balance = Amount.fromString(
-//         value: token.balance ?? "0", decimals: token.decimals);
-//   } catch (e) {
-//     print("This is the error $e");
-//   }
-
-//   return allowZero ? balance.value >= BigInt.zero : balance.value > BigInt.zero;
-// });
 
 final balanceValidProvider = StateProvider.autoDispose<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
@@ -104,7 +75,7 @@ final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
 
   final hasBalance = token.balance != null;
-  var balance;
+  BigInt balance;
   bool valid = false;
 
   if (hasBalance) {
@@ -122,16 +93,10 @@ final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
   return valid;
 });
 
-// final canSwitchProvider = StateProvider.autoDispose<bool>((ref) {
-//   var info = ref.watch(swapInfoProvider);
-//   return info.to.name != '' || info.from.name != '';
-// });
-
 final canScheduleProvider = StateProvider.autoDispose<bool>((ref) {
   final permission = ref.watch(permissionProvider);
   final info = ref.watch(swapInfoProvider);
   final amountValid = ref.watch(amountValidFromProvider);
-  // final swapHasError = !ref.watch(swapProvider).isError;
   // final output_valid = ref.watch(swapPreviewProvider).when<bool>(
   //       data: (data) {
   //         return data.amount > 0;

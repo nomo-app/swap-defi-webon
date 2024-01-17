@@ -3,9 +3,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/asset_provider.dart';
+import 'package:nomo_ui_kit/utils/layout_extensions.dart';
+import 'package:swapping_webon/provider/js_communication.dart';
 import 'package:swapping_webon/provider/filter_provider.dart';
+import 'package:swapping_webon/provider/swap_asstes_provider.dart';
+import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
+import 'package:swapping_webon/widgets/token.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
 
 class SelectAssetDialog extends ConsumerWidget {
@@ -14,9 +18,27 @@ class SelectAssetDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = ref.watch(visibleAssetsProvider);
-
+    final swapInfo = ref.watch(swapInfoProvider);
     final filter = ref.watch(filterProvider);
+    final pairs = ref.watch(swapAssetsProvider);
+
+    Token? selectedAsset = isFrom ? swapInfo.to : swapInfo.from;
+    if (selectedAsset == nullToken) selectedAsset = null;
+
+    final List<Token> tokens;
+
+    final isLoading = ref.watch(swapAssetsProvider.notifier).isLoading;
+    if (selectedAsset == null) {
+      tokens = pairs?.allAssets.toList() ?? [];
+    } else {
+      final info = pairs?.whereTokenSupported(selectedAsset);
+      tokens = info?.allAssets.toList() ?? [];
+      print("This is the tokens $tokens");
+
+      final api = info?.apis.first;
+
+      assert(api != null, "No api found for $selectedAsset");
+    }
 
     return NomoDialog(
       backgroundColor: context.theme.colors.surface,
@@ -36,19 +58,25 @@ class SelectAssetDialog extends ConsumerWidget {
             const SliverToBoxAdapter(
               child: Divider(height: 12, color: Colors.transparent),
             ),
-            tokens.when(
-              data: (data) => SliverList(
+            if (isLoading)
+              const SliverToBoxAdapter(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            else
+              SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    final token = data[index];
+                    final token = tokens[index];
                     final widget = WalletWidget(
                       token: token,
                       onTap: () {
                         Navigator.of(context).pop(token);
                         if (isFrom) {
-                         ref.read(swapInfoProvider.notifier).setFrom(token); 
+                          ref.read(swapInfoProvider.notifier).setFrom(token);
                         } else {
-                         ref.read(swapInfoProvider.notifier).setTo(token);
+                          ref.read(swapInfoProvider.notifier).setTo(token);
                         }
                       },
                     );
@@ -59,18 +87,9 @@ class SelectAssetDialog extends ConsumerWidget {
                     }
                     return const SizedBox.shrink();
                   },
-                  childCount: data.length,
+                  childCount: tokens.length,
                 ),
               ),
-              error: (error, stack) => SliverToBoxAdapter(
-                child: Text(error.toString()),
-              ),
-              loading: () => const SliverToBoxAdapter(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
           ],
         ),
       ),

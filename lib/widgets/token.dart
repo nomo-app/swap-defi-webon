@@ -1,11 +1,11 @@
 class Token {
- final String? name;
- final String symbol;
- final int decimals;
- final String? contractAddress;
- final String? balance;
- final String? network;
- final String? receiveAddress;
+  final String? name;
+  final String symbol;
+  final int decimals;
+  final String? contractAddress;
+  final String? balance;
+  final String? network;
+  final String? receiveAddress;
 
   const Token({
     required this.name,
@@ -59,5 +59,10 @@ class Token {
     }
 
     return symbol.toLowerCase();
+  }
+
+  @override
+  String toString() {
+    return 'Token(name: $name)';
   }
 }

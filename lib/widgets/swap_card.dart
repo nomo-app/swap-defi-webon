@@ -13,6 +13,7 @@ import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:swapping_webon/widgets/swap_preview.dart';
 
 const textPrecision = 5;
 
@@ -70,7 +71,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
     }
 
     final canSchedule = ref.watch(canScheduleProvider);
-    print("can Shedule the swap : $canSchedule");
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
@@ -157,6 +157,15 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 textNotifier: toTextNotifer,
               ),
               const SizedBox(height: 64),
+              if (!showErrorMessage && canSchedule) ...[
+                SwapPreview(
+                  from: swapInfo.from,
+                  to: swapInfo.to,
+                  fromAmount: swapInfo.fromAmount.getDisplayString(5),
+                  toAmount: swapInfo.toAmount.getDisplayString(5),
+                ),
+                const SizedBox(height: 32),
+              ],
               PrimaryNomoButton(
                 type: canSchedule ? ActionType.def : ActionType.nonInteractive,
                 text: "Swap",

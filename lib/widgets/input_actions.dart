@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/asset_provider.dart';
 import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
@@ -12,7 +11,8 @@ import 'package:swapping_webon/widgets/token.dart';
 class InputActions extends ConsumerWidget {
   final bool isFrom;
   final ValueNotifier<String> textNotifier;
-  const InputActions({ required this.textNotifier,required this.isFrom, super.key});
+  const InputActions(
+      {required this.textNotifier, required this.isFrom, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,14 +70,16 @@ class InputActions extends ConsumerWidget {
     );
   }
 
-  selectAmount(double percentage, WidgetRef ref, bool isFrom, Token token, ValueNotifier<String> textNotifier) {
+  selectAmount(double percentage, WidgetRef ref, bool isFrom, Token token,
+      ValueNotifier<String> textNotifier) {
     final amount = Amount.fromString(
         value: token.balance ?? "0", decimals: token.decimals);
-    final valueToSet = BigNumbers(token.decimals).multiplyBI(amount.value, percentage);
-final amountToSet = Amount(value: valueToSet, decimals: token.decimals);
+    final valueToSet =
+        BigNumbers(token.decimals).multiplyBI(amount.value, percentage);
+    final amountToSet = Amount(value: valueToSet, decimals: token.decimals);
     if (isFrom) {
       ref.read(swapInfoProvider.notifier).setFromAmount(valueToSet);
-      
+
       textNotifier.value = amountToSet.displayValue.toString();
     } else {
       ref.read(swapInfoProvider.notifier).setToAmount(valueToSet);
