@@ -3,12 +3,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/filter_provider.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/token.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
+
+final filterProvider = StateProvider.autoDispose<String?>((ref) {
+  return null;
+});
 
 class SelectAssetDialog extends ConsumerWidget {
   final bool isFrom;

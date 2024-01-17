@@ -13,7 +13,7 @@ import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:swapping_webon/widgets/swap_preview.dart';
+import 'package:swapping_webon/widgets/swap_preview_display.dart';
 
 const textPrecision = 5;
 
@@ -158,12 +158,12 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 64),
               if (!showErrorMessage && canSchedule) ...[
-                SwapPreview(
-                  from: swapInfo.from,
-                  to: swapInfo.to,
-                  fromAmount: swapInfo.fromAmount.getDisplayString(5),
-                  toAmount: swapInfo.toAmount.getDisplayString(5),
-                ),
+                SwapPreviewDisplay(
+                    // from: swapInfo.from,
+                    // to: swapInfo.to,
+                    // fromAmount: swapInfo.fromAmount.getDisplayString(5),
+                    // toAmount: swapInfo.toAmount.getDisplayString(5),
+                    ),
                 const SizedBox(height: 32),
               ],
               PrimaryNomoButton(
