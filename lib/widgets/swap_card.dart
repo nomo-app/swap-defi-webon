@@ -8,6 +8,7 @@ import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
+import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
@@ -26,41 +27,50 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
 
-@override
+  @override
   void initState() {
-        super.initState();
+    super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     final swapInfo = ref.watch(swapInfoProvider);
-    // final swapPreview = ref.watch(swapPreviewProvider);
-    // final swapPreviewNotifier = ref.read(swapPreviewProvider.notifier);
-    // final swapPreviewLoading = swapPreview.isRefreshing ||
-    //     swapPreview.isLoading ||
-    //     swapPreview.valueOrNull?.amount == -2;
-    // final fromLoading = swapPreviewLoading && !swapPreviewNotifier.useFrom;
-    // final toLoading = swapPreviewLoading && swapPreviewNotifier.useFrom;
 
-
- useEffect(
+    useEffect(
       () {
-        Future.microtask(() {
- 
-        fromTextNotifer.value = swapInfo.fromIsNullToken
-            ? ""
-            : swapInfo.fromAmount.getDisplayString(textPrecision);
+        Future.microtask(
+          () {
+            fromTextNotifer.value = swapInfo.fromIsNullToken
+                ? ""
+                : swapInfo.fromAmount.getDisplayString(textPrecision);
 
-        toTextNotifer.value = swapInfo.toIsNullToken
-            ? ""
-            : swapInfo.toAmount.getDisplayString(textPrecision);
-
-        },);
+            toTextNotifer.value = swapInfo.toIsNullToken
+                ? ""
+                : swapInfo.toAmount.getDisplayString(textPrecision);
+          },
+        );
 
         return null;
       },
       [swapInfo.to, swapInfo.from],
     );
-    
+
+    String? errorMessage;
+
+    final balanceValidFrom = ref.watch(balanceValidProvider);
+
+    final fromAmountValid =
+        fromTextNotifer.value != "" ? ref.watch(amountValidFromProvider) : true;
+
+    bool showErrorMessage = false;
+
+    if (balanceValidFrom || !fromAmountValid) {
+      errorMessage = "Insufficient Balance";
+      showErrorMessage = true;
+    }
+
+    final canSchedule = ref.watch(canScheduleProvider);
+    print("can Shedule the swap : $canSchedule");
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
@@ -99,7 +109,14 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                inputActions:  InputActions(isFrom: true,textNotifier: fromTextNotifer, ),
+                balanceValid: showErrorMessage,
+                errorWidget: ErrorMessage(
+                  errorMessage: errorMessage,
+                ),
+                inputActions: InputActions(
+                  isFrom: true,
+                  textNotifier: fromTextNotifer,
+                ),
                 isFrom: true,
                 textNotifier: fromTextNotifer,
               ),
@@ -128,27 +145,31 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 24),
               SwapAssetInput(
-                inputActions:  InputActions(isFrom: false, textNotifier: toTextNotifer,),
+                balanceValid: false,
+                errorWidget: ErrorMessage(
+                  errorMessage: errorMessage,
+                ),
+                inputActions: InputActions(
+                  isFrom: false,
+                  textNotifier: toTextNotifer,
+                ),
                 isFrom: false,
                 textNotifier: toTextNotifer,
               ),
               const SizedBox(height: 64),
               PrimaryNomoButton(
+                type: canSchedule ? ActionType.def : ActionType.nonInteractive,
                 text: "Swap",
                 textStyle: context.theme.typography.h2.copyWith(
                   color: context.theme.colors.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () {
-                  // print(ref.read(fromProvider.notifier).state?.selectedValue ??
-                  //     "null");
-                  // print(ref.read(toProvider.notifier).state?.selectedValue ??
-                  //     "null");
+                  print("hello we swap");
                 },
                 height: 48,
                 width: double.infinity,
                 elevation: 2,
-                enabled: false,
               ),
             ],
           ),

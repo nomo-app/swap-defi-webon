@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -7,7 +5,6 @@ import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
 
 const _kExpand = Duration(milliseconds: 300);
@@ -16,25 +13,26 @@ class SwapAssetInput extends ConsumerWidget {
   final Widget inputActions;
   final bool isFrom;
   final ValueNotifier<String> textNotifier;
-  
+  final Widget? errorWidget;
+  final bool balanceValid;
 
   const SwapAssetInput({
     super.key,
     required this.inputActions,
     required this.isFrom,
     required this.textNotifier,
-    
+    required this.errorWidget,
+    required this.balanceValid,
   });
 
   @override
   Widget build(BuildContext context, ref) {
     final tokenInfo = ref.watch(swapInfoProvider);
     final tokenSymbol = isFrom ? tokenInfo.from.symbol : tokenInfo.to.symbol;
-    final showBottomInfo = tokenSymbol != ''; 
+    final showBottomInfo = tokenSymbol != '';
 
-    final showError = false;
+    final shwoError = balanceValid;
 
-    
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -48,18 +46,24 @@ class SwapAssetInput extends ConsumerWidget {
             onChanged: (value) {
               final changedValue = double.tryParse(value);
 
-              final bigNumberToSet = BigNumbers(isFrom?tokenInfo.from.decimals:tokenInfo.to.decimals).convertInputDoubleToBI(changedValue);
+              final bigNumberToSet = BigNumbers(
+                      isFrom ? tokenInfo.from.decimals : tokenInfo.to.decimals)
+                  .convertInputDoubleToBI(changedValue);
               print("This is the BigNumber $bigNumberToSet");
-              
+
               if (bigNumberToSet != null) {
                 if (isFrom) {
-                  ref.read(swapInfoProvider.notifier).setFromAmount(bigNumberToSet);
-                  print("set the number to token from ${ref.read(swapInfoProvider).fromAmount.value}");
+                  ref
+                      .read(swapInfoProvider.notifier)
+                      .setFromAmount(bigNumberToSet);
+                  print(
+                      "set the number to token from ${ref.read(swapInfoProvider).fromAmount.value}");
                 } else {
-                  ref.read(swapInfoProvider.notifier).setToAmount(bigNumberToSet);
+                  ref
+                      .read(swapInfoProvider.notifier)
+                      .setToAmount(bigNumberToSet);
                 }
               }
-
             },
             selectedBorder: Border.all(
               color: Colors.transparent,
@@ -106,7 +110,7 @@ class SwapAssetInput extends ConsumerWidget {
                 child: inputActions,
               ),
             ),
-          if (showError)
+          if (shwoError)
             AnimatedContainer(
               height: showBottomInfo ? 42 : 0,
               duration: _kExpand,
@@ -122,12 +126,12 @@ class SwapAssetInput extends ConsumerWidget {
                 bottom: 8,
               ),
               child: AnimatedOpacity(
-                opacity: showBottomInfo? 1 : 0,
+                opacity: showBottomInfo ? 1 : 0,
                 duration: _kExpand,
-                child: const Column(
+                child: Column(
                   children: [
-                    SizedBox(height: 8),
-                    ErrorMessage(),
+                    const SizedBox(height: 8),
+                    errorWidget!,
                   ],
                 ),
               ),

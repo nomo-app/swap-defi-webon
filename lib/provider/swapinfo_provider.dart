@@ -5,15 +5,13 @@ import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
-
 class SwapInfoNotifier extends StateNotifier<SwapInfo> {
   final Ref ref;
- 
 
   SwapInfoNotifier(this.ref) : super(SwapInfo.zero());
 
   void setFrom(Token from) {
-   // _loadBalanceIfNull(from);
+    // _loadBalanceIfNull(from);
     if (!state.fromIsNullToken) {
       state = state.copyWith(from: from, fromAmount: BigInt.zero);
       return;
@@ -21,11 +19,9 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
     state = state.copyWith(from: from);
   }
 
-
-
   // void _loadBalanceIfNull(Token token) {
   //   if (token == nullToken) return;
-  //   final balance = token.balance; 
+  //   final balance = token.balance;
   //   if (balance == null) {
 
   //     ref.read(balanceServiceProvider).fetchSingle(token, feedBack: false);
@@ -33,7 +29,7 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
   // }
 
   void setTo(Token to) {
- //   _loadBalanceIfNull(to);
+    //   _loadBalanceIfNull(to);
     if (!state.toIsNullToken) {
       state = state.copyWith(to: to, toAmount: BigInt.zero);
       return;
@@ -41,12 +37,10 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
     state = state.copyWith(to: to);
   }
 
-
   get fromToken => state.from;
   get toToken => state.to;
 
   void clearAll() => state = SwapInfo.zero();
-
 
   void setFromAmount(BigInt amount) => state = state.copyWith(
         fromAmount: amount,
@@ -66,40 +60,77 @@ class SwapInfoNotifier extends StateNotifier<SwapInfo> {
 
 final swapInfoProvider =
     StateNotifierProvider<SwapInfoNotifier, SwapInfo>((ref) {
-
-
   return SwapInfoNotifier(ref);
 });
 
 ///
 /// Used for Balance State
 ///
-final balanceValidProvider = StateProvider.family<bool, bool>((ref, allowZero) {
+// final balanceValidProvider = StateProvider.family<bool, bool>((ref, allowZero) {
+//   final token = ref.watch(swapInfoProvider.select((value) => value.from));
+
+//   var balance;
+//   try {
+//     balance = Amount.fromString(
+//         value: token.balance ?? "0", decimals: token.decimals);
+//   } catch (e) {
+//     print("This is the error $e");
+//   }
+
+//   return allowZero ? balance.value >= BigInt.zero : balance.value > BigInt.zero;
+// });
+
+final balanceValidProvider = StateProvider.autoDispose<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
-  final balance = Amount.fromString(value: token.balance!, decimals: token.decimals);
 
-  return allowZero ? balance.value >= BigInt.zero : balance.value > BigInt.zero;
+  final hasBalance = token.balance != null;
+  var showError = false;
+  if (hasBalance) {
+    try {
+      final balanceBI =
+          Amount.fromString(value: token.balance!, decimals: token.decimals)
+              .value;
+
+      showError = balanceBI == BigInt.zero;
+      return showError;
+    } catch (e) {
+      print("This is the error $e");
+    }
+  }
+  return false;
 });
 
-final amountValidFromProvider = StateProvider<bool>((ref) {
+final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
-  final balance = Amount.fromString(value: token.balance!, decimals: token.decimals);
-  final info = ref.watch(swapInfoProvider);
 
-  return info.fromAmountIsValid(balance.value);
+  final hasBalance = token.balance != null;
+  var balance;
+  bool valid = false;
+
+  if (hasBalance) {
+    try {
+      balance =
+          Amount.fromString(value: token.balance!, decimals: token.decimals)
+              .value;
+      final info = ref.watch(swapInfoProvider);
+      valid = info.fromAmountIsValid(balance);
+    } catch (e) {
+      print("This is the error $e");
+    }
+  }
+
+  return valid;
 });
 
-
-
-final canSwitchProvider = StateProvider.autoDispose<bool>((ref) {
-  var info = ref.watch(swapInfoProvider);
-  return info.to.name != '' || info.from.name != '';
-});
+// final canSwitchProvider = StateProvider.autoDispose<bool>((ref) {
+//   var info = ref.watch(swapInfoProvider);
+//   return info.to.name != '' || info.from.name != '';
+// });
 
 final canScheduleProvider = StateProvider.autoDispose<bool>((ref) {
   final permission = ref.watch(permissionProvider);
   final info = ref.watch(swapInfoProvider);
-  final amount_valid = ref.watch(amountValidFromProvider);
+  final amountValid = ref.watch(amountValidFromProvider);
   // final swapHasError = !ref.watch(swapProvider).isError;
   // final output_valid = ref.watch(swapPreviewProvider).when<bool>(
   //       data: (data) {
@@ -111,12 +142,10 @@ final canScheduleProvider = StateProvider.autoDispose<bool>((ref) {
 
   return permission.when<bool>(
     data: (hasPermission) {
-      return hasPermission &&
-          info.fromToValid &&
-          amount_valid;
-          // &&
-          // output_valid &&
-          // swapHasError;
+      return hasPermission && info.fromToValid && amountValid;
+      // &&
+      // output_valid &&
+      // swapHasError;
     },
     error: (e, s) {
       return false;
