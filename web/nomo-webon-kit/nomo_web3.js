@@ -147,6 +147,7 @@ export async function nomoAddCustomToken(args) {
 }
 
 window.nomoGetAssetIcon = nomoGetAssetIcon;
+window.nomoGetEvmAddress = nomoGetEvmAddress;
 window.nomoGetAssetPrice = nomoGetAssetPrice;
 window.nomoGetBalance = nomoGetBalance;
 window.nomoGetVisibleAssets = nomoGetVisibleAssets;

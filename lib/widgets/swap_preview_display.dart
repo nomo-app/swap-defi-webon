@@ -9,20 +9,6 @@ import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 
-// final gasFeeProvider =
-//     FutureProvider.autoDispose.family<double?, Token>((ref, t) async {
-//   // TODO: Check if correct
-//   final network = t.network!;
-
-//   final price =  ref.watch(priceProvider(t.symbol));
-
-//   if (price.value == null ) return null;
-
-//   final gasPrice = (await network.gasPrices).getFee(FeePriority.low);
-//   final fee = gasPrice * GasLimits.ethSend.asBigInt;
-//   final gasFeeCurr = fee.toInt() / network.currency.subunits * price;
-//   return gasFeeCurr;
-// });
 class SwapPreviewDisplay extends ConsumerWidget {
   const SwapPreviewDisplay({
     super.key,
@@ -57,6 +43,7 @@ class SwapPreviewDisplay extends ConsumerWidget {
         backgroundColor: context.theme.colors.background2,
         padding: const EdgeInsets.all(12),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             NomoText(
               "1 ${swapInfo.from.symbol} = ${amountInToken.getDisplayString(5)} ${swapInfo.to.symbol}",

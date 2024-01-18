@@ -121,3 +121,19 @@ class ImageNotifier extends StateNotifier<AsyncValue<ImageEntity>> {
     }
   }
 }
+
+@JS()
+external dynamic nomoGetEvmAddress();
+
+Future<String> getEvmAddress() async {
+  final jsAddressPromise = nomoGetEvmAddress();
+
+  final futureAddress = promiseToFuture(jsAddressPromise);
+  try {
+    final result = await futureAddress;
+
+    return result;
+  } catch (e) {
+    return 'no address found: $e';
+  }
+}
