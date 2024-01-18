@@ -7,15 +7,17 @@ import 'package:swapping_webon/provider/js_communication.dart';
 import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/widgets/amount.dart';
 
 // final gasFeeProvider =
-//     FutureProvider.autoDispose.family<double?, TokenEntity>((ref, t) async {
+//     FutureProvider.autoDispose.family<double?, Token>((ref, t) async {
 //   // TODO: Check if correct
-//   final network = Network.getNetworkFromToken(t)!;
-//   final price = ref.watch(priceProvider(network.currency)).price;
+//   final network = t.network!;
 
-//   if (price == null) return null;
+//   final price =  ref.watch(priceProvider(t.symbol));
+
+//   if (price.value == null ) return null;
+
 //   final gasPrice = (await network.gasPrices).getFee(FeePriority.low);
 //   final fee = gasPrice * GasLimits.ethSend.asBigInt;
 //   final gasFeeCurr = fee.toInt() / network.currency.subunits * price;
@@ -31,58 +33,48 @@ class SwapPreviewDisplay extends ConsumerWidget {
     final swapInfo = ref.watch(swapInfoProvider);
     final rate = ref.watch(swapPreviewProvider);
 
-    // if (false) return SizedBox.shrink();
-
-    // final ouputUnitValue = 1 / rate;
-    // final currency = ref.watch(currencyProvider).symbol;
-    // final ouputUnitValueCur =
-    //     ouputUnitValue * ref.watch(priceProvider(swapInfo.from)).priceVal;
-
     final priceOfTo = ref.watch(priceProvider(swapInfo.to.symbol));
-    print("This is the price of to $priceOfTo");
 
-    return rate.when(
-      data: (value) {
-        return NomoCard(
-          borderRadius: BorderRadius.circular(8),
-          backgroundColor: context.theme.colors.background2,
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  NomoText("From: ${swapInfo.from.name}"),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  NomoText("Amount: ${value.amount}"),
-                ],
-              ),
-              Row(
-                children: [
-                  NomoText("To: ${swapInfo.to.name}"),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  NomoText("Amount: ${value.rate}"),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-      loading: () {
-        return SizedBox.shrink();
-      },
-      error: (err, stack) {
-        print("This is the error in prewiew display:  $err");
-        return NomoCard(
-          borderRadius: BorderRadius.circular(8),
-          backgroundColor: context.theme.colors.background2,
-          padding: const EdgeInsets.all(12),
-          child: NomoText("Error : $err"),
-        );
-      },
-    );
+    if (rate.hasValue && priceOfTo.hasValue) {
+      BigInt toInToken = BigNumbers(swapInfo.to.decimals)
+              .convertInputDoubleToBI(rate.value?.rate) ??
+          BigInt.zero;
+
+      Amount amountInToken =
+          Amount(value: toInToken, decimals: swapInfo.to.decimals);
+
+      BigInt amountTo = BigNumbers(swapInfo.to.decimals)
+              .convertInputDoubleToBI(rate.value?.amount) ??
+          BigInt.zero;
+
+      Amount amount = Amount(value: amountTo, decimals: swapInfo.to.decimals);
+
+      double pricePerTokenTo = priceOfTo.value!["price"];
+      double totalPrice = pricePerTokenTo * amount.displayValue;
+
+      return NomoCard(
+        borderRadius: BorderRadius.circular(8),
+        backgroundColor: context.theme.colors.background2,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            NomoText(
+              "1 ${swapInfo.from.symbol} = ${amountInToken.getDisplayString(5)} ${swapInfo.to.symbol}",
+              style: context.theme.typography.b2,
+              fontWeight: FontWeight.w500,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            NomoText(
+              "${amount.getDisplayString(5)} ${swapInfo.to.symbol} = ${totalPrice.toStringAsFixed(2)} ${priceOfTo.value!["currencyDisplayName"]}",
+              style: context.theme.typography.b2,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        ),
+      );
+    }
+    return const SizedBox.shrink();
   }
 }

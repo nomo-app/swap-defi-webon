@@ -78,8 +78,6 @@ Future<AssetPrice> getAssetPrice(String symbol) async {
     final result = await futurePrice;
     final priceString = getProperty(result, 'price');
     final currencyDisplayName = getProperty(result, 'currencyDisplayName');
-    print('priceString: $priceString');
-    print('currencyDisplayName: $currencyDisplayName');
 
     return {
       'price': priceString,

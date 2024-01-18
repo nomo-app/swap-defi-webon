@@ -4,10 +4,13 @@ import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
 import 'package:nomo_ui_kit/components/buttons/text/nomo_text_button.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
+import 'package:swapping_webon/provider/swap_provider.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/provider/swapping_sevice.dart';
 import 'package:swapping_webon/widgets/amount.dart';
@@ -87,12 +90,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     .toString()
                 : "";
       }
-
-      // if (next is AsyncError) {
-      //   toTextNotifer.value = "";
-      //   errorMessage = "Amount too low!";
-      //   showErrorMessage = true;
-      // }
     });
 
     if (swapPreview.isLoading) {
@@ -190,9 +187,29 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 isFrom: false,
                 textNotifier: toTextNotifer,
               ),
-              const SizedBox(height: 64),
+              const SizedBox(height: 32),
               if (!showErrorMessage && canSchedule) ...[
-                SwapPreviewDisplay(),
+                const Center(
+                  child: SwapPreviewDisplay(),
+                ),
+                const SizedBox(height: 32),
+              ],
+              if (swapPreview.isLoading) ...[
+                Center(
+                  child: Shimmer(
+                    child: ShimmerLoading(
+                      isLoading: true,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: context.theme.colors.background1,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        width: 200,
+                        height: 40,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 32),
               ],
               PrimaryNomoButton(
@@ -203,11 +220,11 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () async {
-                  // ref.read(swapProvider.notifier).getQuote();
+                  print("hello we are here!");
 
-                  // if (await ref.read(swapProvider.notifier).getQuote()) {
-                  //   print("hello we get quote!");
-                  // }
+                  if (await ref.read(swapProvider.notifier).getQuote()) {
+                    print("hello we get quote!");
+                  }
                 },
                 height: 48,
                 width: double.infinity,
