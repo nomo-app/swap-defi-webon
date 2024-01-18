@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
@@ -31,8 +33,8 @@ class SwapAssetInput extends ConsumerWidget {
     final tokenInfo = ref.watch(swapInfoProvider);
     final tokenSymbol = isFrom ? tokenInfo.from.symbol : tokenInfo.to.symbol;
     final showBottomInfo = tokenSymbol != '';
-
     final shwoError = balanceValid;
+    final swapPreview = ref.watch(swapPreviewProvider);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -43,6 +45,23 @@ class SwapAssetInput extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
+            trailling: isFrom
+                ? null
+                : swapPreview.isLoading
+                    ? Shimmer(
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.red,
+                            ),
+                            width: 100,
+                            height: 20,
+                          ),
+                        ),
+                      )
+                    : null,
             valueNotifier: textNotifier,
             onChanged: (value) {
               final changedValue = double.tryParse(value);
@@ -50,15 +69,12 @@ class SwapAssetInput extends ConsumerWidget {
               final bigNumberToSet = BigNumbers(
                       isFrom ? tokenInfo.from.decimals : tokenInfo.to.decimals)
                   .convertInputDoubleToBI(changedValue);
-              print("This is the BigNumber $bigNumberToSet");
 
               if (bigNumberToSet != null) {
                 if (isFrom) {
                   ref
                       .read(swapInfoProvider.notifier)
                       .setFromAmount(bigNumberToSet);
-                  print(
-                      "set the number to token from ${ref.read(swapInfoProvider).fromAmount.value}");
                 } else {
                   ref
                       .read(swapInfoProvider.notifier)

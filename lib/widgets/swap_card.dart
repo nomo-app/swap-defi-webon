@@ -88,15 +88,20 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 : "";
       }
 
-      if (next is AsyncError) {
-        toTextNotifer.value = "";
-        errorMessage = "Amount too low!";
-        showErrorMessage = true;
-      }
+      // if (next is AsyncError) {
+      //   toTextNotifer.value = "";
+      //   errorMessage = "Amount too low!";
+      //   showErrorMessage = true;
+      // }
     });
+
+    if (swapPreview.isLoading) {
+      toTextNotifer.value = "";
+    }
 
     final canSchedule = ref.watch(canScheduleProvider);
     if (swapPreview.hasError) {
+      toTextNotifer.value = "";
       errorMessage = "Amount too low!";
       showErrorMessage = true;
     }
