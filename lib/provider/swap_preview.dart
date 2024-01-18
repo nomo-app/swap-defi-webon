@@ -20,6 +20,9 @@ class SwapPreview {
     this.rate,
     this.gasPrice,
   });
+
+  @override
+  String toString() => "amount: $amount; rate: $rate; gasPrice: $gasPrice";
 }
 
 class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
@@ -61,7 +64,6 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
     if (isValid) {
       state = AsyncValue.loading();
       print("Fetch Quote Preview");
-
       final fromAmount = useFrom ? info.fromAmount.value : null;
       final toAmount = useFrom ? null : info.toAmount.value;
       final from = info.from;
@@ -103,6 +105,8 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
           toAmount,
         );
 
+        print("this is the quote we got $quote");
+
         final amount = useFrom ? quote.settleAmount : quote.depositAmount;
 
         if (amount <= 0) {
@@ -114,9 +118,14 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
           error = null;
         }
       } catch (e, s) {
-        // if (e is QuoteFailure && e.swapError != SwapError.RATELIMIT) {
-        //   error = info;
-        // }
+        if (e is Exception) {
+          error = info;
+        }
+
+        state = AsyncValue.error(e, s);
+
+        print("This is the error !!! $e");
+
         if (state != loadingPreview) {
           state = AsyncValue.error(e, s);
         }

@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/http_client.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/swap_order.dart';
 import 'package:swapping_webon/provider/swap_quote.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
-const sideShiftAffiliateId = "6To1irrSVz";
-const devSideShiftAffiliateId = "gYsuzogCm";
+const sideShiftAffiliateId = "73fsQlpZN5";
 
 abstract class SwappingService {
   static Future<SwapQuote> fetchQuote(
@@ -96,8 +96,7 @@ abstract class SwappingService {
   }) async {
     if (quoteId != "0") {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
-      final affiliateId =
-          useDevWallet ? devSideShiftAffiliateId : sideShiftAffiliateId;
+      final affiliateId = sideShiftAffiliateId;
 
       final settleAddress = "getMultiChainReceiveAddress(to)";
       final refundAddress = "getMultiChainReceiveAddress(from)";
@@ -138,8 +137,7 @@ abstract class SwappingService {
     required Token from,
     bool useDevWallet = false,
   }) async {
-    final affiliateId =
-        useDevWallet ? devSideShiftAffiliateId : sideShiftAffiliateId;
+    final affiliateId = sideShiftAffiliateId;
 
     final settleAddress = "getMultiChainReceiveAddress(to)";
     final refundAddress = "getMultiChainReceiveAddress(from)";

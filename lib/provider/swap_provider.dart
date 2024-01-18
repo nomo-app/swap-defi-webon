@@ -7,10 +7,10 @@ import 'package:swapping_webon/provider/swapping_sevice.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
 
-// final swapProvider =
-//     StateNotifierProvider<SwapNotifier, AsyncOperation<SwapState>>((ref) {
-//   return SwapNotifier(ref);
-// });
+final swapProvider =
+    StateNotifierProvider<SwapNotifier, AsyncValue<SwapState>>((ref) {
+  return SwapNotifier(ref);
+});
 
 enum SwapState {
   quote,
@@ -106,7 +106,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
   ///
   /// Gets Quote and overall Swap Info.
   ///
-  Future<bool> getQuote(BuildContext context) async {
+  Future<bool> getQuote() async {
     state = AsyncLoading();
     final info = ref.read(swapInfoProvider);
 
@@ -137,6 +137,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       state = AsyncValue.data(SwapState.quote);
       return true;
     } on Exception catch (e, s) {
+      print("This is the error in get Quote: $e");
       state = AsyncValue.error(e, s);
       return false;
     } catch (e, s) {

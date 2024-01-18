@@ -6,7 +6,10 @@ import 'package:nomo_ui_kit/components/buttons/text/nomo_text_button.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/provider/numbers.dart';
+import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
+import 'package:swapping_webon/provider/swapping_sevice.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
@@ -37,6 +40,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   Widget build(BuildContext context) {
     final swapInfo = ref.watch(swapInfoProvider);
 
+    final swapPreview = ref.watch(swapPreviewProvider);
+
     useEffect(
       () {
         Future.microtask(
@@ -66,11 +71,35 @@ class _SwapCardState extends ConsumerState<SwapCard> {
     bool showErrorMessage = false;
 
     if (balanceValidFrom || !fromAmountValid) {
-      errorMessage = "Insufficient Balance";
+      errorMessage = "Insufficient Balance!";
       showErrorMessage = true;
     }
 
+    ref.listen(swapPreviewProvider, (previous, next) {
+      if (next is AsyncData<SwapPreview>) {
+        BigInt amount = BigNumbers(swapInfo.to.decimals)
+                .convertInputDoubleToBI(next.value.amount) ??
+            BigInt.zero;
+        toTextNotifer.value =
+            convertAmountBItoDouble(amount, swapInfo.to.decimals).toString() !=
+                    "-1"
+                ? convertAmountBItoDouble(amount, swapInfo.to.decimals)
+                    .toString()
+                : "";
+      }
+
+      if (next is AsyncError) {
+        toTextNotifer.value = "";
+        errorMessage = "Amount too low!";
+        showErrorMessage = true;
+      }
+    });
+
     final canSchedule = ref.watch(canScheduleProvider);
+    if (swapPreview.hasError) {
+      errorMessage = "Amount too low!";
+      showErrorMessage = true;
+    }
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
@@ -158,12 +187,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               ),
               const SizedBox(height: 64),
               if (!showErrorMessage && canSchedule) ...[
-                SwapPreviewDisplay(
-                    // from: swapInfo.from,
-                    // to: swapInfo.to,
-                    // fromAmount: swapInfo.fromAmount.getDisplayString(5),
-                    // toAmount: swapInfo.toAmount.getDisplayString(5),
-                    ),
+                SwapPreviewDisplay(),
                 const SizedBox(height: 32),
               ],
               PrimaryNomoButton(
@@ -173,8 +197,12 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   color: context.theme.colors.onPrimary,
                   fontWeight: FontWeight.bold,
                 ),
-                onPressed: () {
-                  print("hello we swap");
+                onPressed: () async {
+                  // ref.read(swapProvider.notifier).getQuote();
+
+                  // if (await ref.read(swapProvider.notifier).getQuote()) {
+                  //   print("hello we get quote!");
+                  // }
                 },
                 height: 48,
                 width: double.infinity,

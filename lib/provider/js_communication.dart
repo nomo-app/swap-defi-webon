@@ -67,6 +67,36 @@ Future<String> getBalance(String symbol) async {
   }
 }
 
+@JS()
+external dynamic nomoGetAssetPrice(Args args);
+
+Future<AssetPrice> getAssetPrice(String symbol) async {
+  final jsPricePromise = nomoGetAssetPrice(Args(symbol: symbol));
+
+  final futurePrice = promiseToFuture(jsPricePromise);
+  try {
+    final result = await futurePrice;
+    final priceString = getProperty(result, 'price');
+    final currencyDisplayName = getProperty(result, 'currencyDisplayName');
+    print('priceString: $priceString');
+    print('currencyDisplayName: $currencyDisplayName');
+
+    return {
+      'price': priceString,
+      'currencyDisplayName': currencyDisplayName,
+    };
+  } catch (e) {
+    throw Exception('no price found: $e');
+  }
+}
+
+typedef AssetPrice = Map<String, dynamic>;
+
+final priceProvider =
+    FutureProvider.family<AssetPrice, String>((ref, symbol) async {
+  return await getAssetPrice(symbol);
+});
+
 final imageProvider =
     StateNotifierProvider.family<ImageNotifier, AsyncValue<ImageEntity>, Token>(
         (ref, token) {

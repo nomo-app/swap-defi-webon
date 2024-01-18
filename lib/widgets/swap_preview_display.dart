@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/provider/js_communication.dart';
+import 'package:swapping_webon/provider/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/token.dart';
@@ -27,11 +29,7 @@ class SwapPreviewDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final swapInfo = ref.watch(swapInfoProvider);
-    final rate = ref.watch(swapPreviewProvider).when(
-          data: (data) => data.rate,
-          error: (error, stackTrace) => null,
-          loading: () => null,
-        );
+    final rate = ref.watch(swapPreviewProvider);
 
     // if (false) return SizedBox.shrink();
 
@@ -40,32 +38,51 @@ class SwapPreviewDisplay extends ConsumerWidget {
     // final ouputUnitValueCur =
     //     ouputUnitValue * ref.watch(priceProvider(swapInfo.from)).priceVal;
 
-    return NomoCard(
-      borderRadius: BorderRadius.circular(8),
-      backgroundColor: context.theme.colors.background2,
-      padding: const EdgeInsets.all(12),
-      child: const Column(
-        children: [
-          Row(
+    final priceOfTo = ref.watch(priceProvider(swapInfo.to.symbol));
+    print("This is the price of to $priceOfTo");
+
+    return rate.when(
+      data: (value) {
+        return NomoCard(
+          borderRadius: BorderRadius.circular(8),
+          backgroundColor: context.theme.colors.background2,
+          padding: const EdgeInsets.all(12),
+          child: Column(
             children: [
-              NomoText("From: "),
-              SizedBox(
-                width: 12,
+              Row(
+                children: [
+                  NomoText("From: ${swapInfo.from.name}"),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  NomoText("Amount: ${value.amount}"),
+                ],
               ),
-              NomoText("Amount: "),
+              Row(
+                children: [
+                  NomoText("To: ${swapInfo.to.name}"),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  NomoText("Amount: ${value.rate}"),
+                ],
+              ),
             ],
           ),
-          Row(
-            children: [
-              NomoText("To: "),
-              SizedBox(
-                width: 12,
-              ),
-              NomoText("Amount: "),
-            ],
-          ),
-        ],
-      ),
+        );
+      },
+      loading: () {
+        return SizedBox.shrink();
+      },
+      error: (err, stack) {
+        print("This is the error in prewiew display:  $err");
+        return NomoCard(
+          borderRadius: BorderRadius.circular(8),
+          backgroundColor: context.theme.colors.background2,
+          padding: const EdgeInsets.all(12),
+          child: NomoText("Error : $err"),
+        );
+      },
     );
   }
 }

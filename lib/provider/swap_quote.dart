@@ -29,4 +29,8 @@ class SwapQuote {
         'depositAmount': depositAmount,
         'rate': rate,
       };
+
+  @override
+  String toString() =>
+      "id: $id; settleAmount: $settleAmount; depositAmount: $depositAmount; rate: $rate";
 }

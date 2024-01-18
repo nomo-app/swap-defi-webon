@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
+import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/widgets/amount.dart';
 import 'package:swapping_webon/widgets/token.dart';
@@ -65,7 +66,7 @@ final balanceValidProvider = StateProvider.autoDispose<bool>((ref) {
       showError = balanceBI == BigInt.zero;
       return showError;
     } catch (e) {
-      print("This is the error $e");
+      print("This is the error in swapInfoProvider!: $e");
     }
   }
   return false;
@@ -86,7 +87,7 @@ final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
       final info = ref.watch(swapInfoProvider);
       valid = info.fromAmountIsValid(balance);
     } catch (e) {
-      print("This is the error $e");
+      print("This is the error in swapinfo:  $e");
     }
   }
 
@@ -97,20 +98,17 @@ final canScheduleProvider = StateProvider.autoDispose<bool>((ref) {
   final permission = ref.watch(permissionProvider);
   final info = ref.watch(swapInfoProvider);
   final amountValid = ref.watch(amountValidFromProvider);
-  // final output_valid = ref.watch(swapPreviewProvider).when<bool>(
-  //       data: (data) {
-  //         return data.amount > 0;
-  //       },
-  //       error: (_, __) => false,
-  //       loading: () => false,
-  //     );
+  final outputValid = ref.watch(swapPreviewProvider).when<bool>(
+        data: (data) {
+          return data.amount > 0;
+        },
+        error: (_, __) => false,
+        loading: () => false,
+      );
 
   return permission.when<bool>(
     data: (hasPermission) {
-      return hasPermission && info.fromToValid && amountValid;
-      // &&
-      // output_valid &&
-      // swapHasError;
+      return hasPermission && info.fromToValid && amountValid && outputValid;
     },
     error: (e, s) {
       return false;

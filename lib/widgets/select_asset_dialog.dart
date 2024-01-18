@@ -4,6 +4,7 @@ import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
+import 'package:swapping_webon/provider/swap_provider.dart';
 import 'package:swapping_webon/provider/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/token.dart';
@@ -39,6 +40,10 @@ class SelectAssetDialog extends ConsumerWidget {
       final api = info?.apis.first;
 
       assert(api != null, "No api found for $selectedAsset");
+
+      Future.microtask(() {
+        ref.read(swapSchedulerProvider.notifier).setSwappingApi(api!);
+      });
     }
 
     ValueNotifier<String> valueNotifier = ValueNotifier("");
