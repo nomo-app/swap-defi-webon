@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:swapping_webon/provider/http_client.dart';
-import 'package:swapping_webon/provider/js_communication.dart';
-import 'package:swapping_webon/provider/swap_asset.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/model/http_client.dart';
+import 'package:swapping_webon/utils.dart/js_communication.dart';
+import 'package:swapping_webon/provider/model/swap_asset.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 import 'package:collection/collection.dart';
 
 final swapAssetsProvider =

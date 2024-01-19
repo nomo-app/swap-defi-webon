@@ -8,16 +8,16 @@ import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/numbers.dart';
+import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/provider/swapping_sevice.dart';
-import 'package:swapping_webon/widgets/amount.dart';
+import 'package:swapping_webon/provider/model/swapping_sevice.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
-import 'package:swapping_webon/provider/swapinfo.dart';
+import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:swapping_webon/widgets/swap_preview_display.dart';
 
@@ -220,10 +220,9 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () async {
-                  print("hello we are here!");
-
                   if (await ref.read(swapProvider.notifier).getQuote()) {
-                    print("hello we get quote!");
+                    final result = await ref.read(swapProvider.notifier).swap();
+                    print("Result: $result");
                   }
                 },
                 height: 48,

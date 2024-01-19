@@ -1,5 +1,5 @@
-import 'package:swapping_webon/widgets/amount.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 const nullToken = Token(
   name: '',
@@ -9,8 +9,8 @@ const nullToken = Token(
   contractAddress: '',
   network: '',
   receiveAddress: '',
-
 );
+
 extension SwapInfoExtension on SwapInfo {
   bool get fromIsNullToken =>
       from == nullToken || fromAmount.value == BigInt.from(-1);
@@ -18,7 +18,7 @@ extension SwapInfoExtension on SwapInfo {
       to == nullToken || toAmount.value == BigInt.from(-1);
 }
 
-class SwapInfo{
+class SwapInfo {
   final Token from;
   final Token to;
   final Amount fromAmount;
@@ -31,8 +31,8 @@ class SwapInfo{
     required BigInt toAmount,
   })  : fromAmount = Amount(value: fromAmount, decimals: from.decimals),
         toAmount = Amount(value: toAmount, decimals: to.decimals);
-  
-   factory SwapInfo.zero() => SwapInfo(
+
+  factory SwapInfo.zero() => SwapInfo(
         from: nullToken,
         to: nullToken,
         fromAmount: BigInt.from(-1),
@@ -41,7 +41,6 @@ class SwapInfo{
 
   bool fromAmountIsValid(BigInt balance) =>
       (fromAmount.value > BigInt.zero && fromAmount.value <= balance);
-  
 
   bool get fromToValid => from != nullToken && to != nullToken;
 
@@ -50,7 +49,7 @@ class SwapInfo{
 
   bool get isValid => fromToValid && amountValid;
 
-    SwapInfo copyWith({
+  SwapInfo copyWith({
     Token? from,
     Token? to,
     BigInt? fromAmount,

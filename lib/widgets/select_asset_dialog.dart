@@ -5,9 +5,9 @@ import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
-import 'package:swapping_webon/provider/swapinfo.dart';
+import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
 
 final filterProvider = StateProvider.autoDispose<String?>((ref) {

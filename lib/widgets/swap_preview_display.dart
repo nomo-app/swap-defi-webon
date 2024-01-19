@@ -3,11 +3,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/js_communication.dart';
-import 'package:swapping_webon/provider/numbers.dart';
+import 'package:swapping_webon/utils.dart/js_communication.dart';
+import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/widgets/amount.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
 
 class SwapPreviewDisplay extends ConsumerWidget {
   const SwapPreviewDisplay({

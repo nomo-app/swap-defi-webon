@@ -46,9 +46,10 @@ const nomoFunctionCache = {};
  * For idempotent functions, this cache prevents unnecessary calls to the native layer.
  */
 export async function invokeNomoFunctionCached(functionName, args) {
+    console.log("invokeNomoFunctionCached", functionName, args);
     const key = functionName;
     if (!nomoFunctionCache[key]) {
-        console.log.error("invokeNomoFunction", functionName, args)
+        //console.log.error("invokeNomoFunction", functionName, args)
         nomoFunctionCache[key] = await invokeNomoFunction(functionName, args);
     }
     return nomoFunctionCache[key];

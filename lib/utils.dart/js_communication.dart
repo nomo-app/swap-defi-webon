@@ -1,8 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:js/js_util.dart';
-import 'package:swapping_webon/provider/image_repository.dart';
-import 'package:swapping_webon/widgets/image_entity.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/images/image_repository.dart';
+import 'package:swapping_webon/provider/model/image_entity.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 import 'package:js/js.dart';
 
 final visibleAssetsProvider =
@@ -40,6 +40,36 @@ Future<List<Token>> getAssetsFromNomo() async {
     return tokens;
   } catch (e) {
     return [];
+  }
+}
+
+@JS()
+@anonymous
+class SendArgs {
+  external Args get asset;
+  external String get targetAddress;
+  external String get amount;
+  external factory SendArgs({Args asset, String targetAddress, String amount});
+}
+
+@JS()
+external dynamic nomoSendAssets(SendArgs args);
+
+Future<dynamic> sendAssets(
+    String amount, String targetAddress, String symbol) async {
+  final jsSendAssetsPromise = nomoSendAssets(SendArgs(
+    asset: Args(symbol: symbol),
+    targetAddress: targetAddress,
+    amount: amount,
+  ));
+
+  final futureSendAssets = promiseToFuture(jsSendAssetsPromise);
+
+  try {
+    final result = await futureSendAssets;
+    return result;
+  } catch (e) {
+    throw Exception('no assets found: $e');
   }
 }
 
@@ -88,6 +118,21 @@ Future<AssetPrice> getAssetPrice(String symbol) async {
   }
 }
 
+@JS()
+external dynamic nomoGetEvmAddress();
+
+Future<String> getEvmAddress() async {
+  final jsAddressPromise = nomoGetEvmAddress();
+  final futureAddress = promiseToFuture(jsAddressPromise);
+
+  try {
+    final result = await futureAddress;
+    return result;
+  } catch (e) {
+    return 'no address found: $e';
+  }
+}
+
 typedef AssetPrice = Map<String, dynamic>;
 
 final priceProvider =
@@ -119,21 +164,5 @@ class ImageNotifier extends StateNotifier<AsyncValue<ImageEntity>> {
     } catch (e, s) {
       state = AsyncError(e, s);
     }
-  }
-}
-
-@JS()
-external dynamic nomoGetEvmAddress();
-
-Future<String> getEvmAddress() async {
-  final jsAddressPromise = nomoGetEvmAddress();
-
-  final futureAddress = promiseToFuture(jsAddressPromise);
-  try {
-    final result = await futureAddress;
-
-    return result;
-  } catch (e) {
-    return 'no address found: $e';
   }
 }

@@ -1,9 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
-import 'package:swapping_webon/provider/swapinfo.dart';
-import 'package:swapping_webon/widgets/amount.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/model/swapinfo.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 class SwapInfoNotifier extends StateNotifier<SwapInfo> {
   final Ref ref;

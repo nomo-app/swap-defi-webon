@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/js_communication.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/utils.dart/js_communication.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 class TokenPicture extends ConsumerWidget {
   final String heroKey;

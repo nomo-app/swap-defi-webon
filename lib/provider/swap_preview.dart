@@ -1,8 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
-import 'package:swapping_webon/provider/swapinfo.dart';
+import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/provider/swapping_sevice.dart';
+import 'package:swapping_webon/provider/model/swapping_sevice.dart';
 
 const loadingPreview = AsyncValue.data(SwapPreview(-1));
 const refetchPreview = AsyncValue.data(SwapPreview(-2));

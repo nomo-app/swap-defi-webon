@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
-import 'package:swapping_webon/provider/swap_order.dart';
+import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/provider/swapping_sevice.dart';
-import 'package:swapping_webon/widgets/amount.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/model/swapping_sevice.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 final swapProvider =
     StateNotifierProvider<SwapNotifier, AsyncValue<SwapState>>((ref) {
@@ -25,83 +26,78 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
   SwapNotifier(this.ref) : super(AsyncLoading());
   final Ref ref;
 
-  ///
-  /// Executes the Swap.
-  ///
-  // Future<SwapState> swap(BuildContext context) async {
-  //   state = AsyncLoading();
-  //   final info = ref.read(swapInfoProvider);
+  // Executes the Swap.
 
-  //   try {
-  //     var (api, order!) = ref.read(swapSchedulerProvider);
-  //     var prefix = api?.name;
+  Future<String?> swap() async {
+    state = AsyncLoading();
+    final info = ref.read(swapInfoProvider);
 
-  //     // Transaction gets send out
-  //     final deposit_address = order.depositAddress;
+    try {
+      var (api, order!) = ref.read(swapSchedulerProvider);
+      var prefix = api?.name;
 
-  //     final deposit_amount = switch (order) {
-  //       FixedSwapOrder order => order.depositAmount,
-  //       VarSwapOrder _ => info.fromAmount.displayValue,
-  //     };
+      // Transaction gets send out
+      final depositAddress = order.depositAddress;
 
-  //     if (order is VarSwapOrder) {
-  //       if (order.maxDepositAmount < deposit_amount) {
-  //         throw Exception("Amount too high");
-  //       }
-  //       if (order.minDepositAmount > deposit_amount) {
-  //         throw Exception("Amount too low");
-  //       }
-  //     }
+      final depositAmount = switch (order) {
+        FixedSwapOrder order => order.depositAmount,
+        VarSwapOrder _ => info.fromAmount.displayValue,
+      };
 
-  //     final before = getDecimals(deposit_amount);
+      if (order is VarSwapOrder) {
+        if (order.maxDepositAmount < depositAmount) {
+          throw Exception("Amount too high");
+        }
+        if (order.minDepositAmount > depositAmount) {
+          throw Exception("Amount too low");
+        }
+      }
 
-  //     final bi = deposit_amount.toString().replaceAll('.', '').padRight(
-  //           before + info.from.decimals,
-  //           '0',
-  //         );
+      final before = getDecimals(depositAmount);
 
-  //     Token deposit_token = info.from;
+      final bi = depositAmount.toString().replaceAll('.', '').padRight(
+            before + info.from.decimals,
+            '0',
+          );
 
-  //     final depositAmountEntity = Amount(
-  //       value: BigInt.parse(bi),
-  //       decimals: deposit_token.decimals,
-  //     );
+      Token depositToken = info.from;
 
-  //     final network = deposit_token.network;
-  //     if (network == null) throw Exception("Network not found");
+      final depositAmountEntity = Amount(
+        value: BigInt.parse(bi),
+        decimals: depositToken.decimals,
+      );
 
-  //     // String hash = await network.send(
-  //     //   intent: TransferIntent(
-  //     //     amount: depositAmountEntity,
-  //     //     recipient: deposit_address,
-  //     //     token: deposit_token,
-  //     //     feePriority: FeePriority.medium,
-  //     //   ),
-  //     // );
+      // final network = deposit_token.network;
+      // if (network == null) throw Exception("Network not found");
 
-  //     // if (prefix != null) saveId(hash, order.id, prefix);
+      final transaction = await sendAssets(
+        depositAmountEntity.value.toString(),
+        depositAddress,
+        depositToken.symbol,
+      );
 
-  //      state = AsyncValue.data(SwapState.swap);
+      print("Transaction: $transaction");
 
-  //      ref.invalidate(swapSchedulerProvider);
+      String transactionHash = "hash";
 
-  //     return state as SwapState;
+      state = AsyncValue.data(SwapState.swap);
 
-  //   } on ShiftFailure catch (e) {
-  //     state = AsyncOperation.error(e);
-  //     return state;
-  //   } catch (error) {
-  //     print(error);
-  //     state = AsyncOperation.error(
-  //       error is QuoteFailure
-  //           ? Failure(error.message)
-  //           : Failure(
-  //               error.toString(), // translate('failure_unexpected'),
-  //             ),
-  //     );
-  //     return state;
-  //   }
-  // }
+      ref.invalidate(swapSchedulerProvider);
+
+      return transactionHash;
+    } on Exception catch (e, s) {
+      print("This is the error in swap: $e");
+      state = AsyncValue.error(e, s);
+      return null;
+    } catch (error) {
+      print(error);
+      state = AsyncValue.error(
+        error,
+        StackTrace.fromString("Swap Error"),
+      );
+      return null;
+    }
+  }
 
   ///
   /// Gets Quote and overall Swap Info.
@@ -124,6 +120,8 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         null,
       );
 
+      print("Quote!: $quote");
+
       // Create Fixed Shift
       final order = await SwappingService.postFixedOrder(
         api.shift,
@@ -131,6 +129,8 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         to: info.to,
         from: info.from,
       );
+
+      print("Order: $order");
 
       ref.read(swapSchedulerProvider.notifier).updateSchedule(order);
 

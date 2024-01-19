@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:swapping_webon/provider/http_client.dart';
+import 'package:swapping_webon/provider/model/http_client.dart';
 
 final permissionProvider = FutureProvider<bool>((ref) async {
-
-
- // final (api, _) = ref.watch(swapSchedulerProvider);
+  // final (api, _) = ref.watch(swapSchedulerProvider);
 
   // if (api == null || api != SwappingApi.sideshift) {
   //   return true;
@@ -55,7 +53,8 @@ enum SwappingApi {
     quote: "/quotes",
     history: "/shifts",
     singleHistory: "/shift",
-  ),;
+  ),
+  ;
 
   final String coin;
   final String quote;

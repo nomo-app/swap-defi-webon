@@ -1,4 +1,4 @@
-import 'package:swapping_webon/provider/swap_order.dart';
+import 'package:swapping_webon/provider/model/swap_order.dart';
 
 class SwapQuote {
   final String id;

@@ -35,6 +35,10 @@ export async function nomoSignEvmMessage(args) {
  */
 export async function nomoSendAssets(args) {
     const legacyArgs = Object.assign(Object.assign({}, args), { assetSymbol: args.asset.symbol });
+
+    console.log("nomoSendAssetsInJSLegacy", legacyArgs);
+
+
     return await invokeNomoFunction("nomoSendAssets", legacyArgs);
 }
 /**
@@ -96,6 +100,7 @@ export async function nomoGetWalletAddresses() {
             },
         };
     }
+
     return await invokeNomoFunctionCached("nomoGetWalletAddresses", null);
 }
 /**
@@ -146,8 +151,8 @@ export async function nomoAddCustomToken(args) {
     return await invokeNomoFunction("nomoAddCustomToken", args);
 }
 
-window.nomoGetAssetIcon = nomoGetAssetIcon;
 window.nomoGetEvmAddress = nomoGetEvmAddress;
 window.nomoGetAssetPrice = nomoGetAssetPrice;
+window.nomoSendAssets = nomoSendAssets;
 window.nomoGetBalance = nomoGetBalance;
 window.nomoGetVisibleAssets = nomoGetVisibleAssets;

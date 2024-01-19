@@ -3,10 +3,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/provider/numbers.dart';
+import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/widgets/amount.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 class InputActions extends ConsumerWidget {
   final bool isFrom;

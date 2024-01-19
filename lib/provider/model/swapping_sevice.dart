@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:swapping_webon/provider/http_client.dart';
+import 'package:swapping_webon/provider/model/http_client.dart';
+import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
-import 'package:swapping_webon/provider/swap_order.dart';
-import 'package:swapping_webon/provider/swap_quote.dart';
-import 'package:swapping_webon/widgets/token.dart';
+import 'package:swapping_webon/provider/model/swap_order.dart';
+import 'package:swapping_webon/provider/model/swap_quote.dart';
+import 'package:swapping_webon/provider/model/token.dart';
 
 const sideShiftAffiliateId = "73fsQlpZN5";
 
@@ -94,12 +94,20 @@ abstract class SwappingService {
     required Token from,
     bool useDevWallet = false,
   }) async {
+    print("endpoint: $endpoint");
+    print("quoteId: $quoteId");
+    print("to: ${to}");
+    print("from: ${from}");
+
     if (quoteId != "0") {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
-      final affiliateId = sideShiftAffiliateId;
+      const affiliateId = sideShiftAffiliateId;
 
-      final settleAddress = "getMultiChainReceiveAddress(to)";
-      final refundAddress = "getMultiChainReceiveAddress(from)";
+      final evmAddress = await getEvmAddress();
+      print("evmAddress: $evmAddress");
+
+      final settleAddress = evmAddress;
+      final refundAddress = evmAddress;
 
       final response = await HTTPService.client.post(
         Uri.parse(endpoint),
@@ -124,6 +132,8 @@ abstract class SwappingService {
             "Too many open orders. Make deposits to existing orders instead.") {
           throw Exception("Rate limit exceeded.");
         }
+        print("SideShift Order Error: $error");
+
         throw Exception(error);
       }
       return FixedSwapOrder.fromJson(json);
@@ -131,45 +141,45 @@ abstract class SwappingService {
     throw Exception("Invalid Quote ID");
   }
 
-  static Future<VarSwapOrder> postVarOrder(
-    String endpoint, {
-    required Token to,
-    required Token from,
-    bool useDevWallet = false,
-  }) async {
-    final affiliateId = sideShiftAffiliateId;
+  // static Future<VarSwapOrder> postVarOrder(
+  //   String endpoint, {
+  //   required Token to,
+  //   required Token from,
+  //   bool useDevWallet = false,
+  // }) async {
+  //   final affiliateId = sideShiftAffiliateId;
 
-    final settleAddress = "getMultiChainReceiveAddress(to)";
-    final refundAddress = "getMultiChainReceiveAddress(from)";
-    final body = {
-      "settleAddress": settleAddress,
-      "refundAddress": refundAddress,
-      "depositNetwork": from.network,
-      "settleNetwork": to.network,
-      "depositCoin": from.symbol.toLowerCase(),
-      "settleCoin": to.symbol.toLowerCase(),
-      "affiliateId": affiliateId,
-    };
-    final response = await HTTPService.client.post(
-      Uri.parse(endpoint),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(body),
-    );
-    if (response.statusCode == 429) {
-      throw Exception("Rate limit exceeded.");
-    }
-    final json = jsonDecode(response.body);
-    if (response.statusCode != 201) {
-      final error = json['error']['message'];
+  //   final settleAddress = "getMultiChainReceiveAddress(to)";
+  //   final refundAddress = "getMultiChainReceiveAddress(from)";
+  //   final body = {
+  //     "settleAddress": settleAddress,
+  //     "refundAddress": refundAddress,
+  //     "depositNetwork": from.network,
+  //     "settleNetwork": to.network,
+  //     "depositCoin": from.symbol.toLowerCase(),
+  //     "settleCoin": to.symbol.toLowerCase(),
+  //     "affiliateId": affiliateId,
+  //   };
+  //   final response = await HTTPService.client.post(
+  //     Uri.parse(endpoint),
+  //     headers: {"Content-Type": "application/json"},
+  //     body: jsonEncode(body),
+  //   );
+  //   if (response.statusCode == 429) {
+  //     throw Exception("Rate limit exceeded.");
+  //   }
+  //   final json = jsonDecode(response.body);
+  //   if (response.statusCode != 201) {
+  //     final error = json['error']['message'];
 
-      if (error ==
-          "Too many open orders. Make deposits to existing orders instead.") {
-        throw Exception("Rate limit exceeded.");
-      }
-      throw Exception(error);
-    }
-    return VarSwapOrder.fromJson(json);
-  }
+  //     if (error ==
+  //         "Too many open orders. Make deposits to existing orders instead.") {
+  //       throw Exception("Rate limit exceeded.");
+  //     }
+  //     throw Exception(error);
+  //   }
+  //   return VarSwapOrder.fromJson(json);
+  // }
 }
 
 double? convertAmountBItoDouble(BigInt? amount, int decimals) {
