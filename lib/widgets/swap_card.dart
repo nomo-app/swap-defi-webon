@@ -23,6 +23,8 @@ import 'package:swapping_webon/widgets/swap_preview_display.dart';
 
 const textPrecision = 5;
 
+final goToSendScreenProvider = StateProvider<bool>((ref) => false);
+
 class SwapCard extends StatefulHookConsumerWidget {
   const SwapCard({super.key});
 
@@ -102,6 +104,16 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       errorMessage = "Amount too low!";
       showErrorMessage = true;
     }
+
+    final goToSwapScreen = ref.watch(goToSendScreenProvider);
+
+    ref.listen(swapProvider, (previous, next) {
+      if (next is AsyncLoading) {
+        ref.read(goToSendScreenProvider.notifier).state = true;
+      } else {
+        ref.read(goToSendScreenProvider.notifier).state = false;
+      }
+    });
 
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
