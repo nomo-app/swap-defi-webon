@@ -6,7 +6,7 @@ import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/provider/model/swapping_sevice.dart';
 import 'package:swapping_webon/utils.dart/amount.dart';
-import 'package:swapping_webon/provider/model/token.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final swapProvider =
     StateNotifierProvider<SwapNotifier, AsyncValue<SwapState>>((ref) {
@@ -70,10 +70,14 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       // final network = deposit_token.network;
       // if (network == null) throw Exception("Network not found");
 
-      final transaction = await sendAssets(
-        depositAmountEntity.value.toString(),
-        depositAddress,
-        depositToken.symbol,
+      final transaction = await WalletBridge.sendAssets(
+        sendAssetsArguments: NomoSendAssetsArguments(
+          targetAddress: depositAddress,
+          amount: depositAmountEntity.value.toString(),
+          asset: AssetArguments(
+            symbol: depositToken.symbol,
+          ),
+        ),
       );
 
       print("Transaction: $transaction");

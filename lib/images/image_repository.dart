@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:swapping_webon/provider/model/http_client.dart';
 import 'package:swapping_webon/provider/model/image_entity.dart';
-import 'package:swapping_webon/provider/model/token.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const REQUEST_TIMEOUT_LIMIT = Duration(seconds: 10);
 typedef Json = Map<String, dynamic>;

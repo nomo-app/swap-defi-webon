@@ -4,8 +4,8 @@ import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/widgets/balance_display.dart';
-import 'package:swapping_webon/provider/model/token.dart';
 import 'package:swapping_webon/widgets/token_picture.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class WalletWidget extends ConsumerWidget {
   final Token token;

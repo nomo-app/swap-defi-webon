@@ -5,8 +5,8 @@ import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/select_asset_dialog.dart';
-import 'package:swapping_webon/provider/model/token.dart';
 import 'package:swapping_webon/widgets/token_picture.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class SelectAsset extends ConsumerWidget {
   final bool isFrom;

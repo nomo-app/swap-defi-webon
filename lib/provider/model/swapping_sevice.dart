@@ -6,7 +6,7 @@ import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/model/swap_quote.dart';
-import 'package:swapping_webon/provider/model/token.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const sideShiftAffiliateId = "73fsQlpZN5";
 
@@ -103,7 +103,7 @@ abstract class SwappingService {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
 
-      final evmAddress = await getEvmAddress();
+      final evmAddress = await WalletBridge.getEvmAddress();
       print("evmAddress: $evmAddress");
 
       final settleAddress = evmAddress;

@@ -7,8 +7,8 @@ import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/provider/model/token.dart';
 import 'package:swapping_webon/widgets/wallet_widget.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final filterProvider = StateProvider.autoDispose<String?>((ref) {
   return null;
@@ -87,6 +87,9 @@ class SelectAssetDialog extends ConsumerWidget {
                     final widget = WalletWidget(
                       token: token,
                       onTap: () {
+                        print(
+                            "This is the address of the Toke: ${token.receiveAddress}");
+
                         Navigator.of(context).pop(token);
                         if (isFrom) {
                           ref.read(swapInfoProvider.notifier).setFrom(token);

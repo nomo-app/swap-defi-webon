@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
-import 'package:swapping_webon/provider/model/token.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class TokenPicture extends ConsumerWidget {
   final String heroKey;

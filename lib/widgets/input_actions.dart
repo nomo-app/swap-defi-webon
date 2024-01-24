@@ -6,7 +6,7 @@ import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/utils.dart/amount.dart';
-import 'package:swapping_webon/provider/model/token.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class InputActions extends ConsumerWidget {
   final bool isFrom;

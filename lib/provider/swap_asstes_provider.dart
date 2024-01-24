@@ -3,8 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/model/http_client.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/model/swap_asset.dart';
-import 'package:swapping_webon/provider/model/token.dart';
 import 'package:collection/collection.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final swapAssetsProvider =
     StateNotifierProvider<SwapAssetsNotifier, SwappingApiInfo?>((ref) {
