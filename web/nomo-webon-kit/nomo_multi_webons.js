@@ -158,3 +158,4 @@ export async function nomoSetLocalStorageItem(key, value) {
 
 window.nomoSetLocalStorageItem = nomoSetLocalStorageItem;
 window.nomoGetLocalStorageItem = nomoGetLocalStorageItem;
+window.nomoLaunchUrl = nomoLaunchUrl;

@@ -11,7 +11,6 @@ import 'package:swapping_webon/provider/model/tx_history_entity.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/widgets/currency_item.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class HistoryItem extends ConsumerWidget {
@@ -100,13 +99,10 @@ class HistoryItem extends ConsumerWidget {
               shape: BoxShape.circle,
               padding: EdgeInsets.all(8),
               onPressed: () async {
-                print("item.id: ${item.id}");
-                final Uri url =
-                    Uri.parse("https://sideshift.ai/orders/${item.id}");
-
-                await launchUrl(
-                  url,
-                  mode: LaunchMode.inAppBrowserView,
+                final url = "https://sideshift.ai/orders/${item.id}";
+                final result = await WalletBridge.launchUrl(
+                  urlArguments:
+                      UrlArguments(url: url, launchMode: "externalApplication"),
                 );
               },
             ),
