@@ -22,6 +22,18 @@
             ]
         },
         {
+            "name": "swapping_webon web-server (port 3000)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "debug",
+            "args": [
+                "-d",
+                "web-server",
+                "--web-port",
+                "3000"
+            ]
+        },
+        {
             "name": "swapping_webon (release mode)",
             "request": "launch",
             "type": "dart",

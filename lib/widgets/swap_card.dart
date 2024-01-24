@@ -245,7 +245,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 onPressed: () async {
                   if (await ref.read(swapProvider.notifier).getQuote()) {
                     await ref.read(swapProvider.notifier).swap();
-                    ref.read(swapInfoProvider.notifier).clearAll();
                   }
                 },
                 height: 48,

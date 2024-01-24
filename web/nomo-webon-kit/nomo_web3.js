@@ -41,10 +41,6 @@ export async function nomoGetMultiChainReceiveAddress(args) {
  */
 export async function nomoSendAssets(args) {
     const legacyArgs = Object.assign(Object.assign({}, args), { assetSymbol: args.asset.symbol });
-
-    console.log("nomoSendAssetsInJSLegacy", legacyArgs);
-
-
     return await invokeNomoFunction("nomoSendAssets", legacyArgs);
 }
 /**
