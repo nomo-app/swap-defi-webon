@@ -54,7 +54,7 @@ class SwapAssetInput extends ConsumerWidget {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(4),
-                              color: Colors.red,
+                              color: context.theme.colors.background1,
                             ),
                             width: 100,
                             height: 20,

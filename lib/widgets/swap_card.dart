@@ -115,6 +115,17 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       }
     });
 
+    var buttonType;
+
+    if (canSchedule) {
+      buttonType = ActionType.def;
+      if (goToSwapScreen) {
+        buttonType = ActionType.loading;
+      }
+    } else {
+      buttonType = ActionType.nonInteractive;
+    }
+
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
       elevation: 1,
@@ -225,7 +236,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 const SizedBox(height: 32),
               ],
               PrimaryNomoButton(
-                type: canSchedule ? ActionType.def : ActionType.nonInteractive,
+                type: buttonType,
                 text: "Swap",
                 textStyle: context.theme.typography.h2.copyWith(
                   color: context.theme.colors.onPrimary,
@@ -233,8 +244,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 ),
                 onPressed: () async {
                   if (await ref.read(swapProvider.notifier).getQuote()) {
-                    final result = await ref.read(swapProvider.notifier).swap();
-                    print("Result: $result");
+                    await ref.read(swapProvider.notifier).swap();
+                    ref.read(swapInfoProvider.notifier).clearAll();
                   }
                 },
                 height: 48,

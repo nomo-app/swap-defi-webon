@@ -43,27 +43,28 @@ class SwapPreviewDisplay extends ConsumerWidget {
         borderRadius: BorderRadius.circular(8),
         backgroundColor: context.theme.colors.background2,
         padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
             Icon(
               Icons.info_outline_rounded,
               color: context.theme.colors.primary,
             ),
-            NomoText(
-              "1 ${swapInfo.from.symbol} = ${amountInToken.getDisplayString(5)} ${swapInfo.to.symbol}",
-              style: context.theme.typography.b2,
-              fontWeight: FontWeight.w500,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            NomoText(
-              "${amount.getDisplayString(5)} ${swapInfo.to.symbol} = ${totalPrice.toStringAsFixed(2)} ${priceOfTo.value!["currencyDisplayName"]}",
-              style: context.theme.typography.b2,
-              fontWeight: FontWeight.w500,
-            ),
+            const SizedBox(width: 16),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                NomoText(
+                  "1 ${swapInfo.from.symbol} = ${amountInToken.getDisplayString(5)} ${swapInfo.to.symbol}",
+                  style: context.theme.typography.b2,
+                  fontWeight: FontWeight.w500,
+                ),
+                NomoText(
+                  "${amount.getDisplayString(5)} ${swapInfo.to.symbol} = ${totalPrice.toStringAsFixed(2)} ${priceOfTo.value!["currencyDisplayName"]}",
+                  style: context.theme.typography.b2,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            )
           ],
         ),
       );

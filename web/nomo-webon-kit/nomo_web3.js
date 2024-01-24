@@ -26,6 +26,12 @@ export async function nomoSignEvmMessage(args) {
     }
     return await invokeNomoFunction("nomoSignEvmMessage", args);
 }
+
+export async function nomoGetMultiChainReceiveAddress(args) {
+    const result = await invokeNomoFunction("nomoGetMultiChainReceiveAddress", args);
+    return result;
+}
+
 /**
  * Opens a confirmation-dialog to send assets away from the Nomo App.
  * Assets are only sent if the user confirms the dialog.
@@ -156,3 +162,4 @@ window.nomoGetAssetPrice = nomoGetAssetPrice;
 window.nomoSendAssets = nomoSendAssets;
 window.nomoGetBalance = nomoGetBalance;
 window.nomoGetVisibleAssets = nomoGetVisibleAssets;
+window.nomoGetMultiChainReceiveAddress = nomoGetMultiChainReceiveAddress;

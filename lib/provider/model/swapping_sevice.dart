@@ -103,11 +103,27 @@ abstract class SwappingService {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
 
-      final evmAddress = await WalletBridge.getEvmAddress();
-      print("evmAddress: $evmAddress");
+      // final evmAddress = await WalletBridge.getEvmAddress();
+      // print("evmAddress: $evmAddress");
 
-      final settleAddress = evmAddress;
-      final refundAddress = evmAddress;
+      final multiChainReceiveAddressTo =
+          await WalletBridge.getMultiChainReceiveAddress(
+        assetArguments: AssetArguments(
+          symbol: to.symbol,
+        ),
+      );
+      print("multiChainReceiveAddressTo: $multiChainReceiveAddressTo");
+
+      final multiChainReceiveAddressFrom =
+          await WalletBridge.getMultiChainReceiveAddress(
+        assetArguments: AssetArguments(
+          symbol: from.symbol,
+        ),
+      );
+      print("multiChainReceiveAddressFrom: $multiChainReceiveAddressFrom");
+
+      final settleAddress = multiChainReceiveAddressTo;
+      final refundAddress = multiChainReceiveAddressFrom;
 
       final response = await HTTPService.client.post(
         Uri.parse(endpoint),

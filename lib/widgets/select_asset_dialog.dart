@@ -88,7 +88,7 @@ class SelectAssetDialog extends ConsumerWidget {
                       token: token,
                       onTap: () {
                         print(
-                            "This is the address of the Toke: ${token.receiveAddress}");
+                            "This is the address of the Toke: ${token.name}  ${token.symbol}  ${token.decimals}");
 
                         Navigator.of(context).pop(token);
                         if (isFrom) {
