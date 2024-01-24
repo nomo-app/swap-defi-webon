@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_router/nomo_router.dart';
 import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
+import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/icons/nomo_icons.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
@@ -49,7 +51,49 @@ class HistoryScreen extends ConsumerWidget {
         ),
         const SizedBox(height: 48),
         if (history.isLoading)
-          const Center(child: CircularProgressIndicator())
+          Center(
+            child: Shimmer(
+              child: Column(
+                children: [
+                  ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.colors.background1,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      width: context.width,
+                      height: 80,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.colors.background1,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      width: context.width,
+                      height: 80,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ShimmerLoading(
+                    isLoading: true,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: context.theme.colors.background1,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      width: context.width,
+                      height: 80,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
         else if (history.hasError)
           const Center(child: Text("Error"))
         else if (history.hasValue)

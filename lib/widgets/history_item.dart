@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/icons/nomo_icons.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
@@ -10,6 +11,7 @@ import 'package:swapping_webon/provider/model/tx_history_entity.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/widgets/currency_item.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class HistoryItem extends ConsumerWidget {
@@ -67,7 +69,7 @@ class HistoryItem extends ConsumerWidget {
                   color: context.theme.colors.primary,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: Icon(
                   Icons.reviews,
                   color: context.theme.colors.onPrimary,
@@ -82,7 +84,7 @@ class HistoryItem extends ConsumerWidget {
                   color: context.theme.colors.primary,
                   shape: BoxShape.circle,
                 ),
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 child: Icon(
                   status == SwapTxConfirmationState.expired
                       ? Icons.block
@@ -91,7 +93,26 @@ class HistoryItem extends ConsumerWidget {
                   size: 20,
                 ),
               ),
-            Spacer(),
+            const Spacer(),
+            SecondaryNomoButton(
+              iconSize: 18,
+              icon: NomoIcons.info,
+              shape: BoxShape.circle,
+              padding: EdgeInsets.all(8),
+              onPressed: () async {
+                print("item.id: ${item.id}");
+                final Uri url =
+                    Uri.parse("https://sideshift.ai/orders/${item.id}");
+
+                await launchUrl(
+                  url,
+                  mode: LaunchMode.inAppBrowserView,
+                );
+              },
+            ),
+            const SizedBox(
+              width: 22,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
