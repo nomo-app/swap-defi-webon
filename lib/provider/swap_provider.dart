@@ -84,6 +84,8 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
 
       String transactionHash = "hash";
 
+      if (prefix != null) saveId(order.id, prefix);
+
       state = AsyncValue.data(SwapState.swap);
 
       ref.invalidate(swapSchedulerProvider);
@@ -150,16 +152,26 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
     }
   }
 
-  void saveId(String hash, String orderId, String prefix) {
-    // try {
-    //   final box = getGlobalHiveBox();
-    //   var list = (box.get('$prefix/swap_history') ?? {}) as Map;
-    //   list[hash] = orderId;
-    //   box.put('$prefix/swap_history', list);
-    // } catch (e) {
-    //   print(e);
-    // }
-    print("Save ID: $hash, $orderId, $prefix");
+  void saveId(String orderId, String prefix) async {
+    int count = 0;
+
+    while (true) {
+      final result = await WalletBridge.getLocalStorage(
+        key: '$prefix/swap_history/$count',
+      );
+
+      if (result == null) {
+        break;
+      }
+      count++;
+    }
+
+    await WalletBridge.setLocalStorage(
+      key: '$prefix/swap_history/$count',
+      value: orderId,
+    );
+
+    print("Save ID: $prefix/swap_history/$count");
   }
 }
 

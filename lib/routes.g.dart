@@ -11,6 +11,7 @@ class AppRouter extends NomoAppRouter {
       : super(
           {
             SwappingScreenRoute.path: ([a]) => SwappingScreenRoute(),
+            HistoryScreenRoute.path: ([a]) => HistoryScreenRoute(),
           },
           _routes.expanded.toList(),
         );
@@ -27,4 +28,17 @@ class SwappingScreenRoute extends AppRoute implements SwappingScreenArguments {
           page: SwappingScreen(),
         );
   static String path = '/';
+}
+
+class HistoryScreenArguments {
+  const HistoryScreenArguments();
+}
+
+class HistoryScreenRoute extends AppRoute implements HistoryScreenArguments {
+  HistoryScreenRoute()
+      : super(
+          name: '/history',
+          page: HistoryScreen(),
+        );
+  static String path = '/history';
 }

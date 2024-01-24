@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:nomo_router/router/nomo_navigator.dart';
 import 'package:nomo_ui_kit/components/app/routebody/nomo_route_body.dart';
+import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
+import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
+import 'package:nomo_ui_kit/icons/nomo_icons.dart';
+import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/routes.dart';
 import 'package:swapping_webon/widgets/swap_card.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class SwappingScreen extends StatelessWidget {
   const SwappingScreen({super.key});
@@ -8,8 +15,28 @@ class SwappingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NomoRouteBody(
-      builder: (context, route) => const Center(
-        child: SwapCard(),
+      builder: (context, route) => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Align(
+            alignment: Alignment.centerRight,
+            child: SecondaryNomoButton(
+              onPressed: () {
+                NomoNavigator.of(context).push(HistoryScreenRoute());
+              },
+              shape: BoxShape.circle,
+              padding: const EdgeInsets.all(12),
+              iconSize: 24,
+              textStyle: context.theme.typography.b2.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              // ignore: deprecated_member_use
+              icon: NomoIcons.history,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const SwapCard(),
+        ],
       ),
     );
   }

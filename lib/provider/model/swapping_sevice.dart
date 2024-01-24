@@ -103,9 +103,6 @@ abstract class SwappingService {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
 
-      // final evmAddress = await WalletBridge.getEvmAddress();
-      // print("evmAddress: $evmAddress");
-
       final multiChainReceiveAddressTo =
           await WalletBridge.getMultiChainReceiveAddress(
         assetArguments: AssetArguments(
