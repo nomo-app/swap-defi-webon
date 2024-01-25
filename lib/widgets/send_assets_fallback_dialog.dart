@@ -5,7 +5,7 @@ import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
-import 'package:webon_kit_dart/webon_kit_dart.dart';
+import 'package:walletkit_dart/walletkit_dart.dart';
 
 class SendAssetFallBackDialog extends StatelessWidget {
   final FallBackAsset args;
@@ -57,7 +57,15 @@ class SendAssetFallBackDialog extends StatelessWidget {
         PrimaryNomoButton(
           padding: const EdgeInsets.all(12),
           text: "Confirm",
-          onPressed: () async {},
+          onPressed: () async {
+            final rpcInterface = args.symbol == "BNB"
+                ? EvmRpcInterface(BNBNetwork)
+                : EvmRpcInterface(PolygonNetwork);
+
+            // final hash = await rpcInterface.sendCoin(
+            //   credentials: Crede
+            // );
+          },
         ),
       ],
     );

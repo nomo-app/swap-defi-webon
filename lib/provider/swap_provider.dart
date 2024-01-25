@@ -77,6 +77,8 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       // final network = deposit_token.network;
       // if (network == null) throw Exception("Network not found");
 
+      print("Try to send Asset");
+
       final tx = await WebonKitDart.sendAssets(
         targetAddress: depositAddress,
         amount: depositAmountEntity.value.toString(),

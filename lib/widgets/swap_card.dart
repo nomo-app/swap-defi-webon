@@ -247,21 +247,23 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 ),
                 onPressed: () async {
                   if (await ref.read(swapProvider.notifier).getQuote()) {
-                    final result = await ref.read(swapProvider.notifier).swap();
-                    if (result is FallBackAsset) {
-                      print("FallBackAsset: $result");
-                      // ignore: use_build_context_synchronously
-                      showDialog(
-                        context: context,
-                        builder: (context) => SendAssetFallBackDialog(
-                          args: FallBackAsset(
-                            result.amount,
-                            result.targetAddress,
-                            result.symbol,
-                          ),
-                        ),
-                      );
-                    }
+                    // final result =
+                    await ref.read(swapProvider.notifier).swap();
+
+                    // if (result is FallBackAsset) {
+                    //   print("FallBackAsset: $result");
+                    //   // ignore: use_build_context_synchronously
+                    //   showDialog(
+                    //     context: context,
+                    //     builder: (context) => SendAssetFallBackDialog(
+                    //       args: FallBackAsset(
+                    //         result.amount,
+                    //         result.targetAddress,
+                    //         result.symbol,
+                    //       ),
+                    //     ),
+                    //   );
+                    // }
                   }
                 },
                 height: 48,
