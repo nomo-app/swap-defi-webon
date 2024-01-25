@@ -40,7 +40,12 @@ export async function nomoGetMultiChainReceiveAddress(args) {
  * Needs nomo.permission.SEND_ASSETS.
  */
 export async function nomoSendAssets(args) {
+
     const legacyArgs = Object.assign(Object.assign({}, args), { assetSymbol: args.asset.symbol });
+
+    const result = await invokeNomoFunction("nomoSendAssets", legacyArgs);
+    console.log("nomoSendAssetsInJS", result);
+
     return await invokeNomoFunction("nomoSendAssets", legacyArgs);
 }
 /**
@@ -72,10 +77,19 @@ export async function nomoGetVisibleAssets() {
         return {
             visibleAssets: [
                 {
-                    name: "AVINOC",
-                    symbol: "AVINOC ZEN20",
+                    name: "FallBackMode",
+                },
+                {
+                    name: "BNB",
+                    symbol: "BNB",
                     decimals: 18,
-                    contractAddress: "0xF1cA9cb74685755965c7458528A36934Df52A3EF",
+                    balance: "1338663049999999999",
+                },
+                {
+                    name: "Polygon",
+                    symbol: "MATIC",
+                    decimals: 18,
+                    balance: "328634320435138098219",
                 },
             ],
         };
@@ -122,9 +136,7 @@ export async function nomoGetAssetIcon(args) {
 export async function nomoGetAssetPrice(args) {
     if (isFallbackModeActive()) {
         const baseEndpoint = "https://price.zeniq.services/v2/currentprice";
-        const priceEndpoint = !!args.contractAddress && !!args.network
-            ? `${baseEndpoint}/${args.contractAddress}/USD/${args.network}`
-            : `${baseEndpoint}/${args.name}/USD`;
+        const priceEndpoint = `${baseEndpoint}/${args.symbol}/USD`;
         const res = await nomoAuthFetch({ url: priceEndpoint });
         const price = JSON.parse(res.response).price;
         return {

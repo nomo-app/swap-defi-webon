@@ -4,14 +4,14 @@ import 'package:swapping_webon/provider/model/image_entity.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final visibleAssetsProvider =
-    FutureProvider((ref) async => await WalletBridge.getAssetsFromNomo());
+    FutureProvider((ref) async => await WebonKitDart.getVisibleAssets());
 
 final priceProvider =
     FutureProvider.family<AssetPrice, String>((ref, symbol) async {
-  return await WalletBridge.getAssetPrice(
-    assetArguments: AssetArguments(
-      symbol: symbol,
-    ),
+  print("priceProvider: $symbol");
+
+  return await WebonKitDart.getAssetPrice(
+    symbol: symbol,
   );
 });
 

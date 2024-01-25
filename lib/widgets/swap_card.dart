@@ -16,11 +16,13 @@ import 'package:swapping_webon/provider/model/swapping_sevice.dart';
 import 'package:swapping_webon/utils.dart/amount.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
+import 'package:swapping_webon/widgets/send_assets_fallback_dialog.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:swapping_webon/widgets/swap_preview_display.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const textPrecision = 5;
 
@@ -245,7 +247,21 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 ),
                 onPressed: () async {
                   if (await ref.read(swapProvider.notifier).getQuote()) {
-                    await ref.read(swapProvider.notifier).swap();
+                    final result = await ref.read(swapProvider.notifier).swap();
+                    if (result is FallBackAsset) {
+                      print("FallBackAsset: $result");
+                      // ignore: use_build_context_synchronously
+                      showDialog(
+                        context: context,
+                        builder: (context) => SendAssetFallBackDialog(
+                          args: FallBackAsset(
+                            result.amount,
+                            result.targetAddress,
+                            result.symbol,
+                          ),
+                        ),
+                      );
+                    }
                   }
                 },
                 height: 48,

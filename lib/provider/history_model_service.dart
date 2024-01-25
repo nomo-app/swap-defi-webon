@@ -78,7 +78,7 @@ abstract class HistoryModelService {
     List<String> orderIDs = [];
     int count = 0;
     while (true) {
-      final result = await WalletBridge.getLocalStorage(
+      final result = await WebonKitDart.getLocalStorage(
           key: "$prefix/swap_history/$count");
       if (result == null) {
         break;

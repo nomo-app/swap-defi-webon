@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/model/http_client.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
@@ -102,21 +103,17 @@ abstract class SwappingService {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
 
-      final multiChainReceiveAddressTo =
-          await WalletBridge.getMultiChainReceiveAddress(
-        assetArguments: AssetArguments(
-          symbol: to.symbol,
-        ),
-      );
-      print("multiChainReceiveAddressTo: $multiChainReceiveAddressTo");
+      var multiChainReceiveAddressTo =
+          await WebonKitDart.getMultiChainReceiveAddress(
+                symbol: to.symbol,
+              ) ??
+              "0xA7Fa4bB0bba164F999E8C7B83C9da96A3bE44616";
 
       final multiChainReceiveAddressFrom =
-          await WalletBridge.getMultiChainReceiveAddress(
-        assetArguments: AssetArguments(
-          symbol: from.symbol,
-        ),
-      );
-      print("multiChainReceiveAddressFrom: $multiChainReceiveAddressFrom");
+          await WebonKitDart.getMultiChainReceiveAddress(
+                symbol: from.symbol,
+              ) ??
+              "0xA7Fa4bB0bba164F999E8C7B83C9da96A3bE44616";
 
       final settleAddress = multiChainReceiveAddressTo;
       final refundAddress = multiChainReceiveAddressFrom;

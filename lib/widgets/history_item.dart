@@ -103,9 +103,9 @@ class HistoryItem extends ConsumerWidget {
                   padding: const EdgeInsets.all(8),
                   onPressed: () async {
                     final url = "https://sideshift.ai/orders/${item.id}";
-                    await WalletBridge.launchUrl(
-                      urlArguments: UrlArguments(
-                          url: url, launchMode: "externalApplication"),
+                    await WebonKitDart.launchUrl(
+                      url: url,
+                      launchMode: WebonKitDartUrlLaunchMode.externalApplication,
                     );
                   },
                 ),

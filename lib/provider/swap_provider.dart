@@ -21,13 +21,21 @@ int getDecimals(double amount) {
   return amount.toString().split('.')[0].length;
 }
 
+class FallBackAsset {
+  final Amount amount;
+  final String targetAddress;
+  final String symbol;
+
+  FallBackAsset(this.amount, this.targetAddress, this.symbol);
+}
+
 class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
   SwapNotifier(this.ref) : super(const AsyncLoading());
   final Ref ref;
 
   // Executes the Swap.
 
-  Future<String?> swap() async {
+  Future<dynamic> swap() async {
     state = const AsyncLoading();
     final info = ref.read(swapInfoProvider);
 
@@ -69,25 +77,32 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       // final network = deposit_token.network;
       // if (network == null) throw Exception("Network not found");
 
-      WalletBridge.sendAssets(
-        sendAssetsArguments: NomoSendAssetsArguments(
-          targetAddress: depositAddress,
-          amount: depositAmountEntity.value.toString(),
-          asset: AssetArguments(
-            symbol: depositToken.symbol,
-          ),
-        ),
+      final tx = await WebonKitDart.sendAssets(
+        targetAddress: depositAddress,
+        amount: depositAmountEntity.value.toString(),
+        symbol: depositToken.symbol,
       );
+
       ref.read(goToSendScreenProvider.notifier).state = false;
+      print("This is the tx: $tx");
 
       String transactionHash = "hash";
 
-      if (prefix != null) saveId(order.id, prefix);
+      // if (prefix != null) saveId(order.id, prefix);
 
       state = const AsyncValue.data(SwapState.swap);
 
       ref.invalidate(swapSchedulerProvider);
 
+      if (tx == "fallback") {
+        final fallbackAsset = FallBackAsset(
+          depositAmountEntity,
+          depositAddress,
+          depositToken.symbol,
+        );
+
+        return fallbackAsset;
+      }
       return transactionHash;
     } on Exception catch (e, s) {
       print("This is the error in swap: $e");
@@ -154,7 +169,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
     int count = 0;
 
     while (true) {
-      final result = await WalletBridge.getLocalStorage(
+      final result = await WebonKitDart.getLocalStorage(
         key: '$prefix/swap_history/$count',
       );
 
@@ -164,7 +179,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       count++;
     }
 
-    await WalletBridge.setLocalStorage(
+    await WebonKitDart.setLocalStorage(
       key: '$prefix/swap_history/$count',
       value: orderId,
     );

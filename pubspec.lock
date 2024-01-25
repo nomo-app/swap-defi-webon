@@ -52,7 +52,7 @@ packages:
   bip39:
     dependency: transitive
     description:
-      path: "packages/webon-kit-dart/packages/walletkit-dart/packages/bip39"
+      path: "packages/walletkit-dart/packages/bip39"
       relative: true
     source: path
     version: "1.0.6"
@@ -798,9 +798,9 @@ packages:
     source: hosted
     version: "0.0.13"
   walletkit_dart:
-    dependency: transitive
+    dependency: "direct main"
     description:
-      path: "packages/webon-kit-dart/packages/walletkit-dart"
+      path: "packages/walletkit-dart"
       relative: true
     source: path
     version: "1.0.0"
