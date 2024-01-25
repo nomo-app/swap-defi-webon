@@ -30,9 +30,10 @@ abstract class HistoryModelService {
 
     List<HistoryModel> list = [];
 
-    int i = 0;
     try {
       for (String ids in idblocks) {
+        // int i = 0;
+
         final response = await HTTPService.client.get(
           Uri.parse('$endpoint?ids=$ids'),
           headers: {"Content-Type": "application/json"},
@@ -42,7 +43,7 @@ abstract class HistoryModelService {
           for (var item in decodedResponse) {
             final model = HistoryModel.fromJson(item, prefix);
             if (model != null) list.add(model);
-            i++;
+            // i++;
           }
         } else {
           throw Exception("Order not found");
@@ -50,7 +51,7 @@ abstract class HistoryModelService {
       }
 
       return list.reversed.toList();
-    } catch (e, s) {
+    } catch (e) {
       print("Failed to load history $e");
       return [];
     }

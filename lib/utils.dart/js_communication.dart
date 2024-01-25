@@ -26,7 +26,7 @@ class ImageNotifier extends StateNotifier<AsyncValue<ImageEntity>> {
 
   String get key => "image_${token.name}_${token.symbol}";
 
-  ImageNotifier({required this.token}) : super(AsyncLoading()) {
+  ImageNotifier({required this.token}) : super(const AsyncLoading()) {
     loadImage();
   }
 

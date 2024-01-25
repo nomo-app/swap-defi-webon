@@ -3,7 +3,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/card/nomo_card.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:nomo_ui_kit/utils/layout_extensions.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';

@@ -16,23 +16,23 @@ class BigNumbers {
 }
 
   double add(num num1, num num2) {
-    final _num1 = _shiftLeft(num1, decimalPlaces);
-    final _num2 = _shiftLeft(num2, decimalPlaces);
-    final result = _num1 + _num2;
+    final num10 = _shiftLeft(num1, decimalPlaces);
+    final num20 = _shiftLeft(num2, decimalPlaces);
+    final result = num10 + num20;
     return _shiftRightBigInt(result, decimalPlaces);
   }
 
   double subtract(num num1, num num2) {
-    final _num1 = _shiftLeft(num1, decimalPlaces);
-    final _num2 = _shiftLeft(num2, decimalPlaces);
-    final result = _num1 - _num2;
+    final num10 = _shiftLeft(num1, decimalPlaces);
+    final num20 = _shiftLeft(num2, decimalPlaces);
+    final result = num10 - num20;
     return _shiftRightBigInt(result, decimalPlaces);
   }
 
   double multiply(num num1, num num2) {
-    final _num1 = _shiftLeft(num1, decimalPlaces);
-    final _num2 = _shiftLeft(num2, decimalPlaces);
-    final result = _num1 * _num2;
+    final num10 = _shiftLeft(num1, decimalPlaces);
+    final num20 = _shiftLeft(num2, decimalPlaces);
+    final result = num10 * num20;
 
     return _shiftRightBigInt(
       _discardRightBigInt(result, decimalPlaces),
@@ -41,8 +41,8 @@ class BigNumbers {
   }
 
   BigInt multiplyBI(BigInt num1, double num2) {
-    final _num2 = _shiftLeft(num2, decimalPlaces);
-    final result = num1 * _num2;
+    final num20 = _shiftLeft(num2, decimalPlaces);
+    final result = num1 * num20;
 
     return _discardRightBigInt(
       result,

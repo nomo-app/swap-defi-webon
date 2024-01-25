@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'package:swapping_webon/provider/model/http_client.dart';
-import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/model/swap_quote.dart';
@@ -20,9 +19,9 @@ abstract class SwappingService {
   ) async {
     assert(inputAmount != null || outputAmount != null);
 
-    final _inputAmount =
+    final inputAmount0 =
         convertAmountBItoDouble(inputAmount, assetFromItem.decimals);
-    final _outputAmount =
+    final outputAmount0 =
         convertAmountBItoDouble(outputAmount, assetToItem.decimals);
 
     try {
@@ -35,8 +34,8 @@ abstract class SwappingService {
             "settleCoin": assetToItem.symbol,
             "depositNetwork": assetFromItem.network,
             "settleNetwork": assetToItem.network,
-            "depositAmount": _inputAmount,
-            "settleAmount": _outputAmount
+            "depositAmount": inputAmount0,
+            "settleAmount": outputAmount0
           },
         ),
       );
@@ -96,8 +95,8 @@ abstract class SwappingService {
   }) async {
     print("endpoint: $endpoint");
     print("quoteId: $quoteId");
-    print("to: ${to}");
-    print("from: ${from}");
+    print("to: $to");
+    print("from: $from");
 
     if (quoteId != "0") {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;

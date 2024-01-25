@@ -3,20 +3,20 @@ import 'package:swapping_webon/provider/model/http_client.dart';
 import 'package:swapping_webon/provider/model/image_entity.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
-const REQUEST_TIMEOUT_LIMIT = Duration(seconds: 10);
+const requestTimeoutLimit = Duration(seconds: 10);
 typedef Json = Map<String, dynamic>;
-const PRICE_ENDPOINT = "https://price.zeniq.services/v2";
+const priceEndpoint = "https://price.zeniq.services/v2";
 
 abstract class ImageRepository {
   static Future<ImageEntity> getImage(
     Token token,
   ) async {
     final endpoint =
-        '$PRICE_ENDPOINT/info/image/${token.contractAddress != null ? '${token.contractAddress}/${token.network}' : Token.getAssetName(token)}';
+        '$priceEndpoint/info/image/${token.contractAddress != null ? '${token.contractAddress}/${token.network}' : Token.getAssetName(token)}';
     try {
-      final result = await (_getImage(endpoint).timeout(REQUEST_TIMEOUT_LIMIT));
+      final result = await (_getImage(endpoint).timeout(requestTimeoutLimit));
       return result;
-    } catch (e, s) {
+    } catch (e) {
       print(
         "Failed to fetch image from $endpoint",
       );
@@ -35,7 +35,7 @@ abstract class ImageRepository {
       uri,
       headers: {"Content-Type": "application/json"},
     ).timeout(
-      REQUEST_TIMEOUT_LIMIT,
+      requestTimeoutLimit,
       onTimeout: () => throw "Timeout",
     );
 

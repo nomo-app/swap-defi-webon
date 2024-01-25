@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
@@ -24,13 +22,13 @@ int getDecimals(double amount) {
 }
 
 class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
-  SwapNotifier(this.ref) : super(AsyncLoading());
+  SwapNotifier(this.ref) : super(const AsyncLoading());
   final Ref ref;
 
   // Executes the Swap.
 
   Future<String?> swap() async {
-    state = AsyncLoading();
+    state = const AsyncLoading();
     final info = ref.read(swapInfoProvider);
 
     try {
@@ -71,7 +69,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       // final network = deposit_token.network;
       // if (network == null) throw Exception("Network not found");
 
-      final tx = WalletBridge.sendAssets(
+      WalletBridge.sendAssets(
         sendAssetsArguments: NomoSendAssetsArguments(
           targetAddress: depositAddress,
           amount: depositAmountEntity.value.toString(),
@@ -86,7 +84,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
 
       if (prefix != null) saveId(order.id, prefix);
 
-      state = AsyncValue.data(SwapState.swap);
+      state = const AsyncValue.data(SwapState.swap);
 
       ref.invalidate(swapSchedulerProvider);
 
@@ -109,7 +107,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
   /// Gets Quote and overall Swap Info.
   ///
   Future<bool> getQuote() async {
-    state = AsyncLoading();
+    state = const AsyncLoading();
     final info = ref.read(swapInfoProvider);
 
     try {
@@ -140,7 +138,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
 
       ref.read(swapSchedulerProvider.notifier).updateSchedule(order);
 
-      state = AsyncValue.data(SwapState.quote);
+      state = const AsyncValue.data(SwapState.quote);
       return true;
     } on Exception catch (e, s) {
       print("This is the error in get Quote: $e");

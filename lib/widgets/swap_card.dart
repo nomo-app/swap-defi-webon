@@ -18,6 +18,7 @@ import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/swap_asset_input.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
+// ignore: depend_on_referenced_packages
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:swapping_webon/widgets/swap_preview_display.dart';
 
@@ -115,7 +116,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       }
     });
 
-    var buttonType;
+    ActionType buttonType;
 
     if (canSchedule) {
       buttonType = ActionType.def;

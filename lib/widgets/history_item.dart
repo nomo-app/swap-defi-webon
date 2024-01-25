@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
@@ -8,7 +7,6 @@ import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/model/history_model.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:swapping_webon/provider/model/tx_history_entity.dart';
-import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/utils.dart/js_communication.dart';
 import 'package:swapping_webon/widgets/currency_item.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
@@ -93,18 +91,25 @@ class HistoryItem extends ConsumerWidget {
                 ),
               ),
             const Spacer(),
-            SecondaryNomoButton(
-              iconSize: 18,
-              icon: NomoIcons.info,
-              shape: BoxShape.circle,
-              padding: EdgeInsets.all(8),
-              onPressed: () async {
-                final url = "https://sideshift.ai/orders/${item.id}";
-                final result = await WalletBridge.launchUrl(
-                  urlArguments:
-                      UrlArguments(url: url, launchMode: "externalApplication"),
-                );
-              },
+            Column(
+              children: [
+                const SizedBox(
+                  height: 8,
+                ),
+                SecondaryNomoButton(
+                  iconSize: 18,
+                  icon: NomoIcons.info,
+                  shape: BoxShape.circle,
+                  padding: const EdgeInsets.all(8),
+                  onPressed: () async {
+                    final url = "https://sideshift.ai/orders/${item.id}";
+                    await WalletBridge.launchUrl(
+                      urlArguments: UrlArguments(
+                          url: url, launchMode: "externalApplication"),
+                    );
+                  },
+                ),
+              ],
             ),
             const SizedBox(
               width: 22,
@@ -113,7 +118,7 @@ class HistoryItem extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 NomoText(
-                  item.amount?.toStringAsFixed(4) ?? "n.A" + " " + from.symbol,
+                  item.amount?.toStringAsFixed(4) ?? "n.A ${from.symbol}",
                   style: context.theme.typography.h2,
                   fontSize: 16,
                 ),

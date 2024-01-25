@@ -7,10 +7,10 @@ import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class CurrencyItem extends StatelessWidget {
   const CurrencyItem({
-    Key? key,
+    super.key,
     required this.currency,
     required this.status,
-  }) : super(key: key);
+  });
   final Token currency;
   final SwapTxConfirmationState status;
   @override

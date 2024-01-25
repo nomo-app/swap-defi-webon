@@ -62,7 +62,7 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
     final isValid = info.isValid;
 
     if (isValid) {
-      state = AsyncValue.loading();
+      state = const AsyncValue.loading();
       print("Fetch Quote Preview");
       final fromAmount = useFrom ? info.fromAmount.value : null;
       final toAmount = useFrom ? null : info.toAmount.value;

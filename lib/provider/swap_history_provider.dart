@@ -18,7 +18,7 @@ final historyProvider =
 });
 
 class HistoryNotifier extends StateNotifier<AsyncValue<List<HistoryModel>>> {
-  HistoryNotifier() : super(AsyncValue.loading()) {
+  HistoryNotifier() : super(const AsyncValue.loading()) {
     fetchData();
   }
   List<HistoryModel> list = [];

@@ -120,15 +120,15 @@ abstract class SwapPairsService {
     for (final swappingApi in SwappingApi.values) {
       print("Try to load pair from ${swappingApi.coin}");
       final assets = await loadPair(swappingApi.coin);
-      final _assets = <Token>[];
+      final assets0 = <Token>[];
       for (final asset in assets) {
         final token = tokens
             .firstWhereOrNull((element) => element.symbol == asset.symbol);
         if (token == null) continue;
-        _assets.add(token);
+        assets0.add(token);
       }
 
-      allPairs[swappingApi] = _assets;
+      allPairs[swappingApi] = assets0;
     }
 
     return allPairs;

@@ -17,20 +17,12 @@ class HistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(historyProvider);
 
-    if (history.hasValue) {
-      print(history.value);
-    }
-
-    // final assetsFromApp = ref.watch(visibleAssetsProvider);
-
-    // List<Token> assets = [];
-    // if (assetsFromApp.hasValue) {
-    //   assets = assetsFromApp.value!;
-    // }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        const SizedBox(
+          height: 32,
+        ),
         Row(
           children: [
             SecondaryNomoButton(
