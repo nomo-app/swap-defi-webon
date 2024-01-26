@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:html';
+import 'dart:typed_data';
+
 import 'package:flutter/widgets.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
 import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
@@ -62,9 +66,34 @@ class SendAssetFallBackDialog extends StatelessWidget {
                 ? EvmRpcInterface(BNBNetwork)
                 : EvmRpcInterface(PolygonNetwork);
 
-            // final hash = await rpcInterface.sendCoin(
-            //   credentials: Crede
-            // );
+            final seedString = const String.fromEnvironment("SEED").split(",");
+
+            List<int> seedIntList = seedString
+                .map((i) => int.parse(i))
+                .toList(); // Convert to list of integers
+            Uint8List seed = Uint8List.fromList(seedIntList);
+
+            print("seed: $seed");
+
+            final credentials = getETHCredentials(seed: seed);
+
+            final hash = await rpcInterface.sendCoin(
+              credentials: credentials,
+              intent: TransferIntent(
+                recipient: args.targetAddress,
+                amount: Amount.num(
+                    value: args.amount.displayValue,
+                    decimals: args.amount.decimals),
+                feePriority: FeePriority.medium,
+                token: TokenEntity(
+                    name: args.name,
+                    symbol: args.symbol,
+                    decimals: args.amount.decimals),
+              ),
+            );
+
+            print("hash: $hash");
+            Navigator.of(context).pop();
           },
         ),
       ],

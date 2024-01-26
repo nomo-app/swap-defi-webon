@@ -102,17 +102,19 @@ abstract class SwappingService {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
 
+      const devAddress = String.fromEnvironment('DEVADDRESS');
+
       var multiChainReceiveAddressTo =
           await WebonKitDart.getMultiChainReceiveAddress(
                 symbol: to.symbol,
               ) ??
-              "env[DEVADDRESS]";
+              devAddress;
 
       final multiChainReceiveAddressFrom =
           await WebonKitDart.getMultiChainReceiveAddress(
                 symbol: from.symbol,
               ) ??
-              "env[DEVADDRESS]";
+              devAddress;
 
       print("multiChainReceiveAddressTo: $multiChainReceiveAddressTo");
       print("multiChainReceiveAddressFrom: $multiChainReceiveAddressFrom");

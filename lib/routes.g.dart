@@ -25,7 +25,7 @@ class SwappingScreenRoute extends AppRoute implements SwappingScreenArguments {
   SwappingScreenRoute()
       : super(
           name: '/',
-          page: const SwappingScreen(),
+          page: SwappingScreen(),
         );
   static String path = '/';
 }
@@ -38,7 +38,7 @@ class HistoryScreenRoute extends AppRoute implements HistoryScreenArguments {
   HistoryScreenRoute()
       : super(
           name: '/history',
-          page: const HistoryScreen(),
+          page: HistoryScreen(),
         );
   static String path = '/history';
 }

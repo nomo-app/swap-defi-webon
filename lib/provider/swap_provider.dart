@@ -22,11 +22,12 @@ int getDecimals(double amount) {
 }
 
 class FallBackAsset {
+  final String name;
   final Amount amount;
   final String targetAddress;
   final String symbol;
 
-  FallBackAsset(this.amount, this.targetAddress, this.symbol);
+  FallBackAsset(this.amount, this.targetAddress, this.symbol, this.name);
 }
 
 class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
@@ -101,6 +102,7 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
           depositAmountEntity,
           depositAddress,
           depositToken.symbol,
+          depositToken.name!,
         );
 
         return fallbackAsset;
