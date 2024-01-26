@@ -50,6 +50,7 @@ class HistoryScreen extends ConsumerWidget {
                   ShimmerLoading(
                     isLoading: true,
                     child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: context.theme.colors.background1,
                         borderRadius: BorderRadius.circular(8),
@@ -62,6 +63,7 @@ class HistoryScreen extends ConsumerWidget {
                   ShimmerLoading(
                     isLoading: true,
                     child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: context.theme.colors.background1,
                         borderRadius: BorderRadius.circular(8),
@@ -74,6 +76,7 @@ class HistoryScreen extends ConsumerWidget {
                   ShimmerLoading(
                     isLoading: true,
                     child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
                         color: context.theme.colors.background1,
                         borderRadius: BorderRadius.circular(8),
@@ -87,7 +90,19 @@ class HistoryScreen extends ConsumerWidget {
             ),
           )
         else if (history.hasError)
-          const Center(child: Text("Error"))
+          const Center(
+            child: Text(
+              "Error",
+            ),
+          )
+        else if (history.hasValue && history.value!.isEmpty)
+          Center(
+            child: NomoText(
+              "No History found!",
+              style: context.theme.typography.b3,
+              fontWeight: FontWeight.bold,
+            ),
+          )
         else if (history.hasValue)
           Expanded(
             child: ListView.builder(

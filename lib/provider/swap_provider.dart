@@ -1,4 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomo_ui_kit/utils/layout_extensions.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
@@ -15,6 +16,7 @@ final swapProvider =
 enum SwapState {
   quote,
   swap,
+  waiting,
 }
 
 int getDecimals(double amount) {
@@ -31,7 +33,10 @@ class FallBackAsset {
 }
 
 class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
-  SwapNotifier(this.ref) : super(const AsyncLoading());
+  SwapNotifier(this.ref)
+      : super(
+          const AsyncData(SwapState.waiting),
+        );
   final Ref ref;
 
   // Executes the Swap.
@@ -78,24 +83,13 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       // final network = deposit_token.network;
       // if (network == null) throw Exception("Network not found");
 
-      print("Try to send Asset");
-
       final tx = await WebonKitDart.sendAssets(
         targetAddress: depositAddress,
         amount: depositAmountEntity.value.toString(),
         symbol: depositToken.symbol,
       );
 
-      ref.read(goToSendScreenProvider.notifier).state = false;
-      print("This is the tx: $tx");
-
-      String transactionHash = "hash";
-
-      // if (prefix != null) saveId(order.id, prefix);
-
-      state = const AsyncValue.data(SwapState.swap);
-
-      ref.invalidate(swapSchedulerProvider);
+      if (prefix != null && tx != "fallback") saveId(order.id, prefix);
 
       if (tx == "fallback") {
         final fallbackAsset = FallBackAsset(
@@ -104,10 +98,15 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
           depositToken.symbol,
           depositToken.name!,
         );
-
+        state = const AsyncValue.data(SwapState.swap);
+        ref.invalidate(swapSchedulerProvider);
         return fallbackAsset;
       }
-      return transactionHash;
+
+      state = const AsyncValue.data(SwapState.swap);
+      ref.invalidate(swapSchedulerProvider);
+
+      return tx;
     } on Exception catch (e, s) {
       print("This is the error in swap: $e");
       state = AsyncValue.error(e, s);

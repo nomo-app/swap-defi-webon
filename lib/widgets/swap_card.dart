@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:nomo_router/router/nomo_navigator.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/buttons/primary/nomo_primary_button.dart';
 import 'package:nomo_ui_kit/components/buttons/text/nomo_text_button.dart';
@@ -8,6 +9,7 @@ import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
+import 'package:swapping_webon/routes.dart';
 import 'package:swapping_webon/utils.dart/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
@@ -22,11 +24,8 @@ import 'package:swapping_webon/provider/model/swapinfo.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:swapping_webon/widgets/swap_preview_display.dart';
-import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const textPrecision = 5;
-
-final goToSendScreenProvider = StateProvider<bool>((ref) => false);
 
 class SwapCard extends StatefulHookConsumerWidget {
   const SwapCard({super.key});
@@ -108,21 +107,13 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       showErrorMessage = true;
     }
 
-    final goToSwapScreen = ref.watch(goToSendScreenProvider);
-
-    ref.listen(swapProvider, (previous, next) {
-      if (next is AsyncLoading) {
-        ref.read(goToSendScreenProvider.notifier).state = true;
-      } else {
-        ref.read(goToSendScreenProvider.notifier).state = false;
-      }
-    });
+    final watchSwap = ref.watch(swapProvider);
 
     ActionType buttonType;
 
     if (canSchedule) {
       buttonType = ActionType.def;
-      if (goToSwapScreen) {
+      if (watchSwap is AsyncLoading) {
         buttonType = ActionType.loading;
       }
     } else {
@@ -164,7 +155,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   )
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 4),
               SwapAssetInput(
                 balanceValid: showErrorMessage,
                 errorWidget: ErrorMessage(
@@ -177,7 +168,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 isFrom: true,
                 textNotifier: fromTextNotifer,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 18),
               Align(
                 alignment: Alignment.center,
                 child: NomoButton(
@@ -200,7 +191,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 "To",
                 style: context.theme.typography.b3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               SwapAssetInput(
                 balanceValid: false,
                 errorWidget: ErrorMessage(
@@ -213,7 +204,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 isFrom: false,
                 textNotifier: toTextNotifer,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 22),
               if (!showErrorMessage && canSchedule) ...[
                 const Center(
                   child: SwapPreviewDisplay(),
@@ -248,8 +239,12 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 onPressed: () async {
                   if (await ref.read(swapProvider.notifier).getQuote()) {
                     final result = await ref.read(swapProvider.notifier).swap();
+
+                    if (result != null && result is! FallBackAsset) {
+                      NomoNavigator.of(context).push(HistoryScreenRoute());
+                    }
+
                     if (result is FallBackAsset) {
-                      print("FallBackAsset: $result");
                       // ignore: use_build_context_synchronously
                       showDialog(
                         context: context,

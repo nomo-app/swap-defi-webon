@@ -53,7 +53,7 @@ class SwappingScreen extends ConsumerWidget {
                 },
                 shape: BoxShape.circle,
                 padding: const EdgeInsets.all(8),
-                iconSize: 22,
+                iconSize: 18,
                 textStyle: context.theme.typography.b2.copyWith(
                   fontWeight: FontWeight.bold,
                 ),

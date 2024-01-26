@@ -43,9 +43,6 @@ export async function nomoSendAssets(args) {
 
     const legacyArgs = Object.assign(Object.assign({}, args), { assetSymbol: args.asset.symbol });
 
-    const result = await invokeNomoFunction("nomoSendAssets", legacyArgs);
-    console.log("nomoSendAssetsInJS", result);
-
     return await invokeNomoFunction("nomoSendAssets", legacyArgs);
 }
 /**

@@ -89,6 +89,21 @@ class HistoryItem extends ConsumerWidget {
                   color: context.theme.colors.onPrimary,
                   size: 20,
                 ),
+              )
+            else if (status == SwapTxConfirmationState.settled)
+              Container(
+                margin: const EdgeInsets.only(top: 8, left: 16),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: context.theme.colors.surface,
+                  shape: BoxShape.circle,
+                ),
+                padding: const EdgeInsets.all(4),
+                child: Icon(
+                  Icons.check,
+                  color: Colors.green[900],
+                  size: 28,
+                ),
               ),
             const Spacer(),
             Column(
