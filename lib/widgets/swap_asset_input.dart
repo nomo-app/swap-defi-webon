@@ -50,9 +50,9 @@ class SwapAssetInput extends ConsumerWidget {
                       isFrom ? tokenInfo.from.decimals : tokenInfo.to.decimals)
                   .convertInputDoubleToBI(changedValue);
 
-              if (bigNumberToSet != null) {
-                ref.read(swapPreviewProvider.notifier).loadNewPreview();
+              print("changed value: $changedValue");
 
+              if (bigNumberToSet != null) {
                 if (isFrom) {
                   ref.read(swapPreviewProvider.notifier).switchEdit(true);
                   ref
@@ -64,6 +64,10 @@ class SwapAssetInput extends ConsumerWidget {
                       .read(swapInfoProvider.notifier)
                       .setToAmount(bigNumberToSet);
                 }
+
+                Future.delayed(const Duration(milliseconds: 1500), () {
+                  ref.read(swapPreviewProvider.notifier).loadNewPreview();
+                });
               }
             },
             selectedBorder: Border.all(
