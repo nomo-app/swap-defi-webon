@@ -8,7 +8,7 @@ const loadingPreview = AsyncValue.data(SwapPreview(-1));
 const refetchPreview = AsyncValue.data(SwapPreview(-2));
 const wrongInputPreview = AsyncValue.data(SwapPreview(-3));
 
-const _previewRefreshInterval = Duration(seconds: 3);
+const _previewRefreshInterval = Duration(seconds: 800);
 
 class SwapPreview {
   final double amount;
@@ -30,7 +30,7 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
 
   SwapPreviewNotifier(this.ref) : super(loadingPreview) {
     Stream.periodic(_previewRefreshInterval).listen((event) {
-      if (mounted) _loadNewPreview();
+      if (mounted) loadNewPreview();
     });
   }
 
@@ -59,7 +59,7 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
     }
   }
 
-  void _loadNewPreview() async {
+  void loadNewPreview() async {
     final info = ref.read(swapInfoProvider);
 
     if (last?.isOther(info, useFrom) ?? false) {

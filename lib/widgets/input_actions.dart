@@ -80,10 +80,10 @@ class InputActions extends ConsumerWidget {
     if (isFrom) {
       ref.read(swapInfoProvider.notifier).setFromAmount(valueToSet);
 
-      textNotifier.value = amountToSet.displayValue.toString();
+      textNotifier.value = amountToSet.getDisplayString(5);
     } else {
       ref.read(swapInfoProvider.notifier).setToAmount(valueToSet);
-      textNotifier.value = amountToSet.displayValue.toString();
+      textNotifier.value = amountToSet.getDisplayString(5);
     }
   }
 }

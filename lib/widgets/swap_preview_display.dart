@@ -22,6 +22,8 @@ class SwapPreviewDisplay extends ConsumerWidget {
     final priceOfTo = ref.watch(priceProvider(swapInfo.to.symbol));
 
     if (rate.hasValue && priceOfTo.hasValue) {
+      print("this is the amount to:  ${swapInfo.toAmount} ");
+
       BigInt toInToken = BigNumbers(swapInfo.to.decimals)
               .convertInputDoubleToBI(rate.value?.rate) ??
           BigInt.zero;
@@ -29,14 +31,8 @@ class SwapPreviewDisplay extends ConsumerWidget {
       Amount amountInToken =
           Amount(value: toInToken, decimals: swapInfo.to.decimals);
 
-      BigInt amountTo = BigNumbers(swapInfo.to.decimals)
-              .convertInputDoubleToBI(rate.value?.amount) ??
-          BigInt.zero;
-
-      Amount amount = Amount(value: amountTo, decimals: swapInfo.to.decimals);
-
       double pricePerTokenTo = priceOfTo.value!["price"];
-      double totalPrice = pricePerTokenTo * amount.displayValue;
+      double totalPrice = pricePerTokenTo * swapInfo.toAmount.displayValue;
 
       return NomoCard(
         borderRadius: BorderRadius.circular(8),
@@ -58,7 +54,7 @@ class SwapPreviewDisplay extends ConsumerWidget {
                   fontWeight: FontWeight.w500,
                 ),
                 NomoText(
-                  "${amount.getDisplayString(5)} ${swapInfo.to.symbol} = ${totalPrice.toStringAsFixed(2)} ${priceOfTo.value!["currencyDisplayName"]}",
+                  "${swapInfo.toAmount.getDisplayString(5)} ${swapInfo.to.symbol} = ${totalPrice.toStringAsFixed(2)} ${priceOfTo.value!["currencyDisplayName"]}",
                   style: context.theme.typography.b2,
                   fontWeight: FontWeight.w500,
                 ),

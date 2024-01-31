@@ -94,11 +94,11 @@ class _SwapCardState extends ConsumerState<SwapCard> {
         if (useFrom) {
           toTextNotifer.value =
               convertAmountBItoDouble(valueToSet, swapInfo.to.decimals)!
-                  .toStringAsPrecision(4);
+                  .toStringAsPrecision(5);
         } else {
           fromTextNotifer.value =
               convertAmountBItoDouble(valueToSet, swapInfo.from.decimals)!
-                  .toStringAsPrecision(4);
+                  .toStringAsPrecision(5);
         }
       }
     });
@@ -159,17 +159,39 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 ],
               ),
               const SizedBox(height: 4),
-              SwapAssetInput(
-                balanceValid: showErrorMessage,
-                errorWidget: ErrorMessage(
-                  errorMessage: errorMessage,
-                ),
-                inputActions: InputActions(
-                  isFrom: true,
-                  textNotifier: fromTextNotifer,
-                ),
-                isFrom: true,
-                textNotifier: fromTextNotifer,
+              Stack(
+                children: [
+                  SwapAssetInput(
+                    balanceValid: showErrorMessage,
+                    errorWidget: ErrorMessage(
+                      errorMessage: errorMessage,
+                    ),
+                    inputActions: InputActions(
+                      isFrom: true,
+                      textNotifier: fromTextNotifer,
+                    ),
+                    isFrom: true,
+                    textNotifier: fromTextNotifer,
+                  ),
+                  if (swapPreview.isLoading)
+                    Positioned(
+                      right: 12,
+                      top: 22,
+                      child: Shimmer(
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: context.theme.colors.background1,
+                            ),
+                            width: 120,
+                            height: 28,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
               const SizedBox(height: 18),
               Align(
@@ -195,17 +217,39 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 style: context.theme.typography.b3,
               ),
               const SizedBox(height: 8),
-              SwapAssetInput(
-                balanceValid: false,
-                errorWidget: ErrorMessage(
-                  errorMessage: errorMessage,
-                ),
-                inputActions: InputActions(
-                  isFrom: false,
-                  textNotifier: toTextNotifer,
-                ),
-                isFrom: false,
-                textNotifier: toTextNotifer,
+              Stack(
+                children: [
+                  SwapAssetInput(
+                    balanceValid: false,
+                    errorWidget: ErrorMessage(
+                      errorMessage: errorMessage,
+                    ),
+                    inputActions: InputActions(
+                      isFrom: false,
+                      textNotifier: toTextNotifer,
+                    ),
+                    isFrom: false,
+                    textNotifier: toTextNotifer,
+                  ),
+                  if (swapPreview.isLoading)
+                    Positioned(
+                      right: 12,
+                      top: 22,
+                      child: Shimmer(
+                        child: ShimmerLoading(
+                          isLoading: true,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: context.theme.colors.background1,
+                            ),
+                            width: 120,
+                            height: 28,
+                          ),
+                        ),
+                      ),
+                    )
+                ],
               ),
               const SizedBox(height: 22),
               if (!showErrorMessage && canSchedule) ...[
@@ -239,11 +283,13 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   fontWeight: FontWeight.bold,
                 ),
                 onPressed: () async {
+                  final nomoNavigator = NomoNavigator.of(context);
+
                   if (await ref.read(swapProvider.notifier).getQuote()) {
                     final result = await ref.read(swapProvider.notifier).swap();
 
                     if (result != null && result is! FallBackAsset) {
-                      NomoNavigator.of(context).push(HistoryScreenRoute());
+                      nomoNavigator.push(HistoryScreenRoute());
                     }
 
                     if (result is FallBackAsset) {
