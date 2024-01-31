@@ -89,6 +89,8 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         symbol: depositToken.symbol,
       );
 
+      print("TX: $tx");
+
       if (prefix != null && tx != "fallback") saveId(order.id, prefix);
 
       if (tx == "fallback") {

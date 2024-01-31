@@ -45,23 +45,21 @@ class SwapAssetInput extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
-            trailling: isFrom
-                ? null
-                : swapPreview.isLoading
-                    ? Shimmer(
-                        child: ShimmerLoading(
-                          isLoading: true,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: context.theme.colors.background1,
-                            ),
-                            width: 100,
-                            height: 20,
-                          ),
+            trailling: swapPreview.isLoading
+                ? Shimmer(
+                    child: ShimmerLoading(
+                      isLoading: true,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(4),
+                          color: context.theme.colors.background1,
                         ),
-                      )
-                    : null,
+                        width: 100,
+                        height: 20,
+                      ),
+                    ),
+                  )
+                : null,
             valueNotifier: textNotifier,
             onChanged: (value) {
               final changedValue = double.tryParse(value);
@@ -72,10 +70,12 @@ class SwapAssetInput extends ConsumerWidget {
 
               if (bigNumberToSet != null) {
                 if (isFrom) {
+                  ref.read(swapPreviewProvider.notifier).switchEdit(true);
                   ref
                       .read(swapInfoProvider.notifier)
                       .setFromAmount(bigNumberToSet);
                 } else {
+                  ref.read(swapPreviewProvider.notifier).switchEdit(false);
                   ref
                       .read(swapInfoProvider.notifier)
                       .setToAmount(bigNumberToSet);

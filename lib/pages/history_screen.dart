@@ -23,23 +23,26 @@ class HistoryScreen extends ConsumerWidget {
         const SizedBox(
           height: 32,
         ),
-        Row(
-          children: [
-            SecondaryNomoButton(
-              shape: BoxShape.rectangle,
-              padding: const EdgeInsets.all(8),
-              iconSize: 22,
-              icon: NomoIcons.arrowLeft,
-              onPressed: () => NomoNavigator.of(context).pop(),
-            ),
-            const Spacer(),
-            NomoText(
-              "History",
-              style: context.theme.typography.h2,
-              fontWeight: FontWeight.bold,
-            ),
-            const Spacer(),
-          ],
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              SecondaryNomoButton(
+                shape: BoxShape.rectangle,
+                padding: const EdgeInsets.all(8),
+                iconSize: 22,
+                icon: NomoIcons.arrowLeft,
+                onPressed: () => NomoNavigator.of(context).pop(),
+              ),
+              const Spacer(),
+              NomoText(
+                "History",
+                style: context.theme.typography.h2,
+                fontWeight: FontWeight.bold,
+              ),
+              const Spacer(),
+            ],
+          ),
         ),
         const SizedBox(height: 48),
         if (history.isLoading)

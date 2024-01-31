@@ -84,21 +84,24 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
     ref.listen(swapPreviewProvider, (previous, next) {
       if (next is AsyncData<SwapPreview>) {
-        BigInt amount = BigNumbers(swapInfo.to.decimals)
-                .convertInputDoubleToBI(next.value.amount) ??
-            BigInt.zero;
-        toTextNotifer.value =
-            convertAmountBItoDouble(amount, swapInfo.to.decimals).toString() !=
-                    "-1"
-                ? convertAmountBItoDouble(amount, swapInfo.to.decimals)
-                    .toString()
-                : "";
+        final useFrom = ref.read(swapPreviewProvider.notifier).getIfFromIsUsed;
+
+        BigInt valueToSet =
+            BigNumbers(useFrom ? swapInfo.from.decimals : swapInfo.to.decimals)
+                    .convertInputDoubleToBI(next.value.amount) ??
+                BigInt.zero;
+
+        if (useFrom) {
+          toTextNotifer.value =
+              convertAmountBItoDouble(valueToSet, swapInfo.to.decimals)!
+                  .toStringAsPrecision(4);
+        } else {
+          fromTextNotifer.value =
+              convertAmountBItoDouble(valueToSet, swapInfo.from.decimals)!
+                  .toStringAsPrecision(4);
+        }
       }
     });
-
-    if (swapPreview.isLoading) {
-      toTextNotifer.value = "";
-    }
 
     final canSchedule = ref.watch(canScheduleProvider);
     if (swapPreview.hasError) {
@@ -221,7 +224,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                           color: context.theme.colors.background1,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        width: 200,
                         height: 40,
                       ),
                     ),

@@ -36,7 +36,10 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
 
   SwapInfo? last;
   SwapInfo? error;
+
   bool useFrom = true;
+
+  bool get getIfFromIsUsed => useFrom;
 
   void setLoading(SwapInfo info) {
     if (info.fromToValid && info.amountValid) {
@@ -45,6 +48,14 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
       state = refetchPreview;
     } else {
       state = loadingPreview;
+    }
+  }
+
+  void switchEdit(bool isFrom) {
+    if (isFrom) {
+      useFrom = true;
+    } else {
+      useFrom = false;
     }
   }
 
@@ -64,35 +75,11 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
     if (isValid) {
       state = const AsyncValue.loading();
       print("Fetch Quote Preview");
+
       final fromAmount = useFrom ? info.fromAmount.value : null;
       final toAmount = useFrom ? null : info.toAmount.value;
       final from = info.from;
       final to = info.to;
-
-      // if (ref.read(useUniswapProvider)) {
-      //   try {
-      //     final quote = await UniswapService.fetchQuote(from, to, fromAmount);
-      //     if (quote.settleAmount <= 0) {
-      //       throw QuoteFailure(SwapError.AMOUNT_TOO_LOW);
-      //     }
-      //     if (state != loadingPreview) {
-      //       state = AsyncValue.data(
-      //         SwapPreview(
-      //           quote.settleAmount,
-      //           rate: quote.rate,
-      //         ),
-      //       );
-      //       last = info;
-      //       error = null;
-      //     }
-      //   } catch (e, s) {
-      //     error = info;
-      //     if (state != loadingPreview) {
-      //       state = AsyncValue.error(e, s);
-      //     }
-      //   }
-      //   return;
-      // }
 
       try {
         final (swappingApi!, _) = ref.read(swapSchedulerProvider);
