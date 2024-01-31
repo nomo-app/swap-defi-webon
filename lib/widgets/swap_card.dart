@@ -37,6 +37,7 @@ class SwapCard extends StatefulHookConsumerWidget {
 class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
+  String? valueBefore;
 
   @override
   void initState() {
@@ -92,13 +93,19 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 BigInt.zero;
 
         if (useFrom) {
-          toTextNotifer.value =
+          final value =
               convertAmountBItoDouble(valueToSet, swapInfo.to.decimals)!
                   .toStringAsPrecision(5);
+
+          valueBefore = value;
+          toTextNotifer.value = value;
         } else {
-          fromTextNotifer.value =
+          final value =
               convertAmountBItoDouble(valueToSet, swapInfo.from.decimals)!
                   .toStringAsPrecision(5);
+
+          valueBefore = value;
+          fromTextNotifer.value = value;
         }
       }
     });
@@ -162,6 +169,26 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               Stack(
                 children: [
                   SwapAssetInput(
+                    onChanged: (value) {
+                      final changedValue = double.tryParse(value);
+
+                      final bigNumberToSet = BigNumbers(swapInfo.from.decimals)
+                          .convertInputDoubleToBI(changedValue);
+
+                      print("changed value: $changedValue");
+
+                      if (bigNumberToSet != null) {
+                        if (valueBefore != value) {
+                          ref
+                              .read(swapPreviewProvider.notifier)
+                              .switchEdit(true);
+                        }
+
+                        ref
+                            .read(swapInfoProvider.notifier)
+                            .setFromAmount(bigNumberToSet);
+                      }
+                    },
                     balanceValid: showErrorMessage,
                     errorWidget: ErrorMessage(
                       errorMessage: errorMessage,
@@ -220,6 +247,22 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               Stack(
                 children: [
                   SwapAssetInput(
+                    onChanged: (value) {
+                      final changedValue = double.tryParse(value);
+
+                      final bigNumberToSet = BigNumbers(swapInfo.to.decimals)
+                          .convertInputDoubleToBI(changedValue);
+
+                      if (valueBefore != value) {
+                        ref
+                            .read(swapPreviewProvider.notifier)
+                            .switchEdit(false);
+                      }
+
+                      ref
+                          .read(swapInfoProvider.notifier)
+                          .setToAmount(bigNumberToSet!);
+                    },
                     balanceValid: false,
                     errorWidget: ErrorMessage(
                       errorMessage: errorMessage,

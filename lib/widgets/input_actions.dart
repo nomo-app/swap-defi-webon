@@ -72,17 +72,14 @@ class InputActions extends ConsumerWidget {
 
   selectAmount(double percentage, WidgetRef ref, bool isFrom, Token token,
       ValueNotifier<String> textNotifier) {
-    final amount = Amount.fromString(
-        value: token.balance ?? "0", decimals: token.decimals);
+    final amount =
+        Amount.fromString(value: token.balance!, decimals: token.decimals);
     final valueToSet =
         BigNumbers(token.decimals).multiplyBI(amount.value, percentage);
     final amountToSet = Amount(value: valueToSet, decimals: token.decimals);
     if (isFrom) {
-      ref.read(swapInfoProvider.notifier).setFromAmount(valueToSet);
-
       textNotifier.value = amountToSet.getDisplayString(5);
     } else {
-      ref.read(swapInfoProvider.notifier).setToAmount(valueToSet);
       textNotifier.value = amountToSet.getDisplayString(5);
     }
   }

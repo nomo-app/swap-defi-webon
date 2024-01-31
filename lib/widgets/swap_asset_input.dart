@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/utils.dart/numbers.dart';
-import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/widgets/select_asset.dart';
 
@@ -16,6 +14,7 @@ class SwapAssetInput extends ConsumerWidget {
   final ValueNotifier<String> textNotifier;
   final Widget? errorWidget;
   final bool balanceValid;
+  final void Function(String value) onChanged;
 
   const SwapAssetInput({
     super.key,
@@ -24,6 +23,7 @@ class SwapAssetInput extends ConsumerWidget {
     required this.textNotifier,
     required this.errorWidget,
     required this.balanceValid,
+    required this.onChanged,
   });
 
   @override
@@ -43,33 +43,7 @@ class SwapAssetInput extends ConsumerWidget {
         children: [
           NomoInput(
             valueNotifier: textNotifier,
-            onChanged: (value) {
-              final changedValue = double.tryParse(value);
-
-              final bigNumberToSet = BigNumbers(
-                      isFrom ? tokenInfo.from.decimals : tokenInfo.to.decimals)
-                  .convertInputDoubleToBI(changedValue);
-
-              print("changed value: $changedValue");
-
-              if (bigNumberToSet != null) {
-                if (isFrom) {
-                  ref.read(swapPreviewProvider.notifier).switchEdit(true);
-                  ref
-                      .read(swapInfoProvider.notifier)
-                      .setFromAmount(bigNumberToSet);
-                } else {
-                  ref.read(swapPreviewProvider.notifier).switchEdit(false);
-                  ref
-                      .read(swapInfoProvider.notifier)
-                      .setToAmount(bigNumberToSet);
-                }
-
-                Future.delayed(const Duration(milliseconds: 1500), () {
-                  ref.read(swapPreviewProvider.notifier).loadNewPreview();
-                });
-              }
-            },
+            onChanged: onChanged,
             selectedBorder: Border.all(
               color: Colors.transparent,
               width: 1,

@@ -8,7 +8,7 @@ const loadingPreview = AsyncValue.data(SwapPreview(-1));
 const refetchPreview = AsyncValue.data(SwapPreview(-2));
 const wrongInputPreview = AsyncValue.data(SwapPreview(-3));
 
-const _previewRefreshInterval = Duration(seconds: 800);
+const _previewRefreshInterval = Duration(seconds: 3);
 
 class SwapPreview {
   final double amount;
