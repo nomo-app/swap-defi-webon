@@ -7,5 +7,5 @@
 	url = https://github.com/nomo-app/webon-kit-dart.git
 
 [submodule "packages/walletkit-dart"]
-	path = packages/webon-kit-dart
+	path = packages/walletkit-dart
 	url = https://github.com/nomo-app/walletkit-dart.git
