@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
+import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
@@ -35,7 +36,6 @@ class SelectAssetDialog extends ConsumerWidget {
     } else {
       final info = pairs?.whereTokenSupported(selectedAsset);
       tokens = info?.allAssets.toList() ?? [];
-      print("This is the tokens $tokens");
 
       final api = info?.apis.first;
 
@@ -78,6 +78,21 @@ class SelectAssetDialog extends ConsumerWidget {
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
+              ),
+            if (tokens.isEmpty)
+              SliverToBoxAdapter(
+                child: Center(
+                  child: Column(
+                    children: [
+                      NomoText("No assets found!",
+                          style: context.theme.typography.h1),
+                      NomoText(
+                        "Make sure you have visible assets!",
+                        style: context.theme.typography.b2,
+                      ),
+                    ],
+                  ),
+                ),
               )
             else
               SliverList(
@@ -87,9 +102,6 @@ class SelectAssetDialog extends ConsumerWidget {
                     final widget = WalletWidget(
                       token: token,
                       onTap: () {
-                        print(
-                            "This is the address of the Toke: ${token.name}  ${token.symbol}  ${token.decimals}");
-
                         Navigator.of(context).pop(token);
                         if (isFrom) {
                           ref.read(swapInfoProvider.notifier).setFrom(token);
@@ -98,6 +110,7 @@ class SelectAssetDialog extends ConsumerWidget {
                         }
                       },
                     );
+
                     if (filter == null || filter.isEmpty) return widget;
                     if (token.name!.toLowerCase().contains(filter) ||
                         token.symbol.toLowerCase().contains(filter)) {

@@ -97,15 +97,19 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               convertAmountBItoDouble(valueToSet, swapInfo.to.decimals)!
                   .toStringAsPrecision(5);
 
-          valueBefore = value;
-          toTextNotifer.value = value;
+          if (value != "-1") {
+            valueBefore = value;
+            toTextNotifer.value = value;
+          }
         } else {
           final value =
               convertAmountBItoDouble(valueToSet, swapInfo.from.decimals)!
                   .toStringAsPrecision(5);
 
-          valueBefore = value;
-          fromTextNotifer.value = value;
+          if (value != "-1") {
+            valueBefore = value;
+            fromTextNotifer.value = value;
+          }
         }
       }
     });
