@@ -88,6 +88,13 @@ export async function nomoGetVisibleAssets() {
                     decimals: 18,
                     balance: "328634320435138098219",
                 },
+                {
+                    name: "Bitcoin",
+                    symbol: "BTC",
+                    decimals: 8,
+                    balance: "271161",
+
+                },
             ],
         };
     }

@@ -52,16 +52,16 @@ final swapInfoProvider =
   return SwapInfoNotifier(ref);
 });
 
-final balanceValidProvider = StateProvider.autoDispose<bool>((ref) {
+final balanceValidProvider = StateProvider<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
 
   final hasBalance = token.balance != null;
   var showError = false;
   if (hasBalance) {
     try {
-      final balanceBI =
-          Amount.fromString(value: token.balance!, decimals: token.decimals)
-              .value;
+      final balanceBI = Amount.fromString(
+              value: token.balance ?? "", decimals: token.decimals)
+          .value;
 
       showError = balanceBI == BigInt.zero;
       return showError;
@@ -72,7 +72,7 @@ final balanceValidProvider = StateProvider.autoDispose<bool>((ref) {
   return false;
 });
 
-final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
+final amountValidFromProvider = StateProvider<bool>((ref) {
   final token = ref.watch(swapInfoProvider.select((value) => value.from));
 
   final hasBalance = token.balance != null;
@@ -81,9 +81,9 @@ final amountValidFromProvider = StateProvider.autoDispose<bool>((ref) {
 
   if (hasBalance) {
     try {
-      balance =
-          Amount.fromString(value: token.balance!, decimals: token.decimals)
-              .value;
+      balance = Amount.fromString(
+              value: token.balance ?? "", decimals: token.decimals)
+          .value;
       final info = ref.watch(swapInfoProvider);
       valid = info.fromAmountIsValid(balance);
     } catch (e) {

@@ -31,7 +31,7 @@ class SwapAssetInput extends ConsumerWidget {
     final tokenInfo = ref.watch(swapInfoProvider);
     final tokenSymbol = isFrom ? tokenInfo.from.symbol : tokenInfo.to.symbol;
     final showBottomInfo = tokenSymbol != '';
-    final shwoError = balanceValid;
+    final showError = balanceValid;
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -89,9 +89,9 @@ class SwapAssetInput extends ConsumerWidget {
                 child: inputActions,
               ),
             ),
-          if (shwoError)
+          if (showError && showBottomInfo)
             AnimatedContainer(
-              height: showBottomInfo ? 42 : 0,
+              height: 42,
               duration: _kExpand,
               decoration: BoxDecoration(
                 color: context.theme.colors.error,
@@ -105,7 +105,7 @@ class SwapAssetInput extends ConsumerWidget {
                 bottom: 8,
               ),
               child: AnimatedOpacity(
-                opacity: showBottomInfo ? 1 : 0,
+                opacity: 1,
                 duration: _kExpand,
                 child: Column(
                   children: [

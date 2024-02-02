@@ -1,11 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:nomo_ui_kit/utils/layout_extensions.dart';
 import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/provider/model/swapping_sevice.dart';
 import 'package:swapping_webon/utils.dart/amount.dart';
-import 'package:swapping_webon/widgets/swap_card.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final swapProvider =

@@ -54,13 +54,19 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       () {
         Future.microtask(
           () {
+            if (swapInfo.fromAmount.getDisplayString(textPrecision) == "") {}
+
             fromTextNotifer.value = swapInfo.fromIsNullToken
                 ? ""
-                : swapInfo.fromAmount.getDisplayString(textPrecision);
+                : swapInfo.fromAmount.getDisplayString(textPrecision) == "-1"
+                    ? ""
+                    : swapInfo.fromAmount.getDisplayString(textPrecision);
 
             toTextNotifer.value = swapInfo.toIsNullToken
                 ? ""
-                : swapInfo.toAmount.getDisplayString(textPrecision);
+                : swapInfo.toAmount.getDisplayString(textPrecision) == "-1"
+                    ? ""
+                    : swapInfo.toAmount.getDisplayString(textPrecision);
           },
         );
 
@@ -88,7 +94,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
         final useFrom = ref.read(swapPreviewProvider.notifier).getIfFromIsUsed;
 
         BigInt valueToSet =
-            BigNumbers(useFrom ? swapInfo.from.decimals : swapInfo.to.decimals)
+            BigNumbers(useFrom ? swapInfo.to.decimals : swapInfo.from.decimals)
                     .convertInputDoubleToBI(next.value.amount) ??
                 BigInt.zero;
 
@@ -97,7 +103,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               convertAmountBItoDouble(valueToSet, swapInfo.to.decimals)!
                   .toStringAsPrecision(5);
 
-          if (value != "-1") {
+          if (value != "-1" && value != "-1.0000") {
             valueBefore = value;
             toTextNotifer.value = value;
           }
@@ -106,7 +112,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
               convertAmountBItoDouble(valueToSet, swapInfo.from.decimals)!
                   .toStringAsPrecision(5);
 
-          if (value != "-1") {
+          if (value != "-1" && value != "-1.0000") {
             valueBefore = value;
             fromTextNotifer.value = value;
           }
@@ -116,7 +122,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
     final canSchedule = ref.watch(canScheduleProvider);
     if (swapPreview.hasError) {
-      toTextNotifer.value = "";
       errorMessage = "Amount too low!";
       showErrorMessage = true;
     }
@@ -163,8 +168,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     ),
                     onPressed: () {
                       ref.read(swapInfoProvider.notifier).clearAll();
-                      toTextNotifer.value = "";
-                      fromTextNotifer.value = "";
                     },
                   )
                 ],
@@ -174,7 +177,9 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 children: [
                   SwapAssetInput(
                     onChanged: (value) {
-                      final changedValue = double.tryParse(value);
+                      double? changedValue = double.tryParse(value);
+
+                      changedValue ??= -1;
 
                       final bigNumberToSet = BigNumbers(swapInfo.from.decimals)
                           .convertInputDoubleToBI(changedValue);
@@ -187,7 +192,6 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                               .read(swapPreviewProvider.notifier)
                               .switchEdit(true);
                         }
-
                         ref
                             .read(swapInfoProvider.notifier)
                             .setFromAmount(bigNumberToSet);
@@ -265,7 +269,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
                       ref
                           .read(swapInfoProvider.notifier)
-                          .setToAmount(bigNumberToSet!);
+                          .setToAmount(bigNumberToSet ?? BigInt.from(-1));
                     },
                     balanceValid: false,
                     errorWidget: ErrorMessage(
@@ -298,12 +302,12 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     )
                 ],
               ),
-              const SizedBox(height: 22),
+              const SizedBox(height: 24),
               if (!showErrorMessage && canSchedule) ...[
                 const Center(
                   child: SwapPreviewDisplay(),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
               ],
               if (swapPreview.isLoading) ...[
                 Center(
@@ -320,7 +324,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
               ],
               PrimaryNomoButton(
                 type: buttonType,

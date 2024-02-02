@@ -41,55 +41,27 @@ class HistoryScreen extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
               const Spacer(),
+              SecondaryNomoButton(
+                shape: BoxShape.rectangle,
+                padding: const EdgeInsets.all(8),
+                iconSize: 22,
+                icon: NomoIcons.arrowRotateLeft,
+                onPressed: () {
+                  ref.read(historyProvider.notifier).fetchData();
+                },
+              ),
             ],
           ),
         ),
         const SizedBox(height: 48),
         if (history.isLoading)
-          Center(
-            child: Shimmer(
-              child: Column(
-                children: [
-                  ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: context.theme.colors.background1,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      width: context.width,
-                      height: 80,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: context.theme.colors.background1,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      width: context.width,
-                      height: 80,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ShimmerLoading(
-                    isLoading: true,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: context.theme.colors.background1,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      width: context.width,
-                      height: 80,
-                    ),
-                  ),
-                ],
-              ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: 5,
+              itemBuilder: (context, index) {
+                return shimmerWidget(context);
+              },
             ),
           )
         else if (history.hasError)
@@ -109,6 +81,7 @@ class HistoryScreen extends ConsumerWidget {
         else if (history.hasValue)
           Expanded(
             child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: history.value?.length,
               itemBuilder: (context, index) {
                 return HistoryItem(
@@ -118,6 +91,23 @@ class HistoryScreen extends ConsumerWidget {
             ),
           ),
       ],
+    );
+  }
+
+  Widget shimmerWidget(BuildContext context) {
+    return Shimmer(
+      child: ShimmerLoading(
+        isLoading: true,
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            color: context.theme.colors.background1,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          width: context.width,
+          height: 80,
+        ),
+      ),
     );
   }
 }
