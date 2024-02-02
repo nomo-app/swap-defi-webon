@@ -8,7 +8,7 @@ const loadingPreview = AsyncValue.data(SwapPreview(-1));
 const refetchPreview = AsyncValue.data(SwapPreview(-2));
 const wrongInputPreview = AsyncValue.data(SwapPreview(-3));
 
-const _previewRefreshInterval = Duration(seconds: 3);
+const _previewRefreshInterval = Duration(seconds: 2);
 
 class SwapPreview {
   final double amount;
@@ -72,6 +72,13 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
 
     final isValid = info.isValid;
 
+    final fromBalanceString = info.from.balance;
+    final fromBalance = BigInt.tryParse(fromBalanceString ?? "0");
+
+    if ((fromBalance ?? BigInt.from(0)) < info.fromAmount.value) {
+      return;
+    }
+
     if (isValid) {
       state = const AsyncValue.loading();
       print("Fetch Quote Preview");
@@ -111,11 +118,9 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
 
         state = AsyncValue.error(e, s);
 
-        print("This is the error !!! $e");
-
-        if (state != loadingPreview) {
-          state = AsyncValue.error(e, s);
-        }
+        // if (state != loadingPreview) {
+        //   state = AsyncValue.error(e, s);
+        // }
       }
     } else {
       state = loadingPreview;

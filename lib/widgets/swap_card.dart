@@ -122,7 +122,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
     final canSchedule = ref.watch(canScheduleProvider);
     if (swapPreview.hasError) {
-      errorMessage = "Amount too low!";
+      errorMessage = swapPreview.error.toString().replaceAll("Exception:", "");
       showErrorMessage = true;
     }
 
