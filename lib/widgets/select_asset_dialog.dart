@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
@@ -35,7 +36,11 @@ class SelectAssetDialog extends ConsumerWidget {
       tokens = pairs?.allAssets.toList() ?? [];
     } else {
       final info = pairs?.whereTokenSupported(selectedAsset);
-      tokens = info?.allAssets.toList() ?? [];
+
+      tokens = info?.allAssets
+              .whereNot((element) => element == selectedAsset)
+              .toList() ??
+          [];
 
       final api = info?.apis.first;
 
