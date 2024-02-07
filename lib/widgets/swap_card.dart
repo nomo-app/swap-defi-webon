@@ -218,7 +218,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   if (swapPreview.isLoading)
                     Positioned(
                       right: 12,
-                      top: 22,
+                      top: 18,
                       child: Shimmer(
                         child: ShimmerLoading(
                           isLoading: true,
@@ -228,7 +228,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                               color: context.theme.colors.background1,
                             ),
                             width: 120,
-                            height: 28,
+                            height: 32,
                           ),
                         ),
                       ),
@@ -296,7 +296,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   if (swapPreview.isLoading)
                     Positioned(
                       right: 12,
-                      top: 22,
+                      top: 18,
                       child: Shimmer(
                         child: ShimmerLoading(
                           isLoading: true,
@@ -306,7 +306,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                               color: context.theme.colors.background1,
                             ),
                             width: 120,
-                            height: 28,
+                            height: 32,
                           ),
                         ),
                       ),
