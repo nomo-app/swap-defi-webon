@@ -181,6 +181,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   SwapAssetInput(
                     onChanged: (value) {
                       debouncer.run(() {
+                        value = value.replaceAll(',', '.');
                         double? changedValue = double.tryParse(value);
 
                         changedValue ??= -1;
@@ -264,6 +265,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                   SwapAssetInput(
                     onChanged: (value) {
                       debouncer.run(() {
+                        value = value.replaceAll(',', '.');
+
                         final changedValue = double.tryParse(value);
 
                         final bigNumberToSet = BigNumbers(swapInfo.to.decimals)

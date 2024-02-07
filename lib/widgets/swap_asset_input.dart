@@ -65,7 +65,7 @@ class SwapAssetInput extends ConsumerWidget {
               bottom: 12,
             ),
             inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.]\d{0,4})?')),
+              FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
             ],
           ),
           if (showBottomInfo)
