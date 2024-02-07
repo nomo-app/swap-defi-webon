@@ -3,7 +3,7 @@ import 'package:swapping_webon/provider/swap_asstes_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/provider/model/swapping_sevice.dart';
-import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/utils/amount.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 final swapProvider =
@@ -87,8 +87,6 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         symbol: depositToken.symbol,
       );
 
-      print("TX: $tx");
-
       if (prefix != null && tx != "fallback") saveId(order.id, prefix);
 
       if (tx == "fallback") {
@@ -108,11 +106,9 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
 
       return tx;
     } on Exception catch (e, s) {
-      print("This is the error in swap: $e");
       state = AsyncValue.error(e, s);
       return null;
     } catch (error) {
-      print(error);
       state = AsyncValue.error(
         error,
         StackTrace.fromString("Swap Error"),
@@ -142,8 +138,6 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         null,
       );
 
-      print("Quote!: $quote");
-
       // Create Fixed Shift
       final order = await SwappingService.postFixedOrder(
         api.shift,
@@ -152,14 +146,11 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
         from: info.from,
       );
 
-      print("Order: $order");
-
       ref.read(swapSchedulerProvider.notifier).updateSchedule(order);
 
       state = const AsyncValue.data(SwapState.quote);
       return true;
     } on Exception catch (e, s) {
-      print("This is the error in get Quote: $e");
       state = AsyncValue.error(e, s);
       return false;
     } catch (e, s) {
@@ -186,8 +177,6 @@ class SwapNotifier extends StateNotifier<AsyncValue<SwapState>> {
       key: '$prefix/swap_history/$count',
       value: orderId,
     );
-
-    print("Save ID: $prefix/swap_history/$count");
   }
 }
 

@@ -10,12 +10,13 @@ import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/routes.dart';
-import 'package:swapping_webon/utils.dart/numbers.dart';
+import 'package:swapping_webon/utils/debouncer.dart';
+import 'package:swapping_webon/utils/numbers.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/swap_provider.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
 import 'package:swapping_webon/provider/model/swapping_sevice.dart';
-import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/utils/amount.dart';
 import 'package:swapping_webon/widgets/error_message.dart';
 import 'package:swapping_webon/widgets/input_actions.dart';
 import 'package:swapping_webon/widgets/send_assets_fallback_dialog.dart';
@@ -38,6 +39,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
   final fromTextNotifer = ValueNotifier('');
   final toTextNotifer = ValueNotifier('');
   String? valueBefore;
+  Debouncer debouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
@@ -84,7 +86,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
 
     bool showErrorMessage = false;
 
-    if (balanceValidFrom || !fromAmountValid) {
+    if (balanceValidFrom ||
+        !fromAmountValid && swapInfo.fromAmount.value > BigInt.zero) {
       errorMessage = "Insufficient Balance!";
       showErrorMessage = true;
     }
@@ -177,25 +180,29 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 children: [
                   SwapAssetInput(
                     onChanged: (value) {
-                      double? changedValue = double.tryParse(value);
+                      debouncer.run(() {
+                        double? changedValue = double.tryParse(value);
 
-                      changedValue ??= -1;
+                        changedValue ??= -1;
 
-                      final bigNumberToSet = BigNumbers(swapInfo.from.decimals)
-                          .convertInputDoubleToBI(changedValue);
+                        final bigNumberToSet =
+                            BigNumbers(swapInfo.from.decimals)
+                                .convertInputDoubleToBI(changedValue);
 
-                      print("changed value: $changedValue");
-
-                      if (bigNumberToSet != null) {
-                        if (valueBefore != value) {
+                        if (bigNumberToSet != null) {
+                          if (valueBefore != value) {
+                            ref
+                                .read(swapPreviewProvider.notifier)
+                                .switchEdit(true);
+                          }
+                          ref
+                              .read(swapInfoProvider.notifier)
+                              .setFromAmount(bigNumberToSet);
                           ref
                               .read(swapPreviewProvider.notifier)
-                              .switchEdit(true);
+                              .loadNewPreview();
                         }
-                        ref
-                            .read(swapInfoProvider.notifier)
-                            .setFromAmount(bigNumberToSet);
-                      }
+                      });
                     },
                     balanceValid: showErrorMessage,
                     errorWidget: ErrorMessage(
@@ -256,20 +263,24 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                 children: [
                   SwapAssetInput(
                     onChanged: (value) {
-                      final changedValue = double.tryParse(value);
+                      debouncer.run(() {
+                        final changedValue = double.tryParse(value);
 
-                      final bigNumberToSet = BigNumbers(swapInfo.to.decimals)
-                          .convertInputDoubleToBI(changedValue);
+                        final bigNumberToSet = BigNumbers(swapInfo.to.decimals)
+                            .convertInputDoubleToBI(changedValue);
 
-                      if (valueBefore != value) {
+                        if (valueBefore != value) {
+                          ref
+                              .read(swapPreviewProvider.notifier)
+                              .switchEdit(false);
+                        }
+
                         ref
-                            .read(swapPreviewProvider.notifier)
-                            .switchEdit(false);
-                      }
+                            .read(swapInfoProvider.notifier)
+                            .setToAmount(bigNumberToSet ?? BigInt.from(-1));
 
-                      ref
-                          .read(swapInfoProvider.notifier)
-                          .setToAmount(bigNumberToSet ?? BigInt.from(-1));
+                        ref.read(swapPreviewProvider.notifier).loadNewPreview();
+                      });
                     },
                     balanceValid: false,
                     errorWidget: ErrorMessage(

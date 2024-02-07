@@ -52,7 +52,6 @@ abstract class HistoryModelService {
 
       return list.reversed.toList();
     } catch (e) {
-      print("Failed to load history $e");
       return [];
     }
   }

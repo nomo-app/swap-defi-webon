@@ -3,9 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_ui_kit/components/buttons/base/nomo_button.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
-import 'package:swapping_webon/utils.dart/numbers.dart';
+import 'package:swapping_webon/utils/numbers.dart';
 import 'package:swapping_webon/provider/swapinfo_provider.dart';
-import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/utils/amount.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class InputActions extends ConsumerWidget {

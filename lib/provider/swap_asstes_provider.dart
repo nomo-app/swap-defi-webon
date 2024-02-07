@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/model/http_client.dart';
-import 'package:swapping_webon/utils.dart/js_communication.dart';
+import 'package:swapping_webon/utils/js_communication.dart';
 import 'package:swapping_webon/provider/model/swap_asset.dart';
 import 'package:collection/collection.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
@@ -31,7 +31,6 @@ class SwapAssetsNotifier extends StateNotifier<SwappingApiInfo?> {
     if (data == null) return;
 
     final pairs = await SwapPairsService.aggregateAssets(data);
-    print("This is the pairs $pairs");
 
     final appPairs = <SwappingApi, Iterable<Token>>{};
 
@@ -115,10 +114,7 @@ abstract class SwapPairsService {
   static Future<SwappingApiInfo> aggregateAssets(List<Token> tokens) async {
     final allPairs = <SwappingApi, Iterable<Token>>{};
 
-    print("This is the tokens $tokens");
-
     for (final swappingApi in SwappingApi.values) {
-      print("Try to load pair from ${swappingApi.coin}");
       final assets = await loadPair(swappingApi.coin);
       final assets0 = <Token>[];
       for (final asset in assets) {
@@ -156,8 +152,7 @@ abstract class SwapPairsService {
       ];
 
       return assets;
-    } catch (e, s) {
-      print("Failed to load pair: $s");
+    } catch (e) {
       return [];
     }
   }

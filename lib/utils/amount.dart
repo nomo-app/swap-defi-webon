@@ -45,7 +45,6 @@ class Amount {
     return value == other.value && decimals == other.decimals;
   }
 
-  @override
   List<Object?> get props => [value, decimals];
 
   @override
@@ -67,12 +66,13 @@ extension SatoshiUtils on num {
     return (this >= 0 && this <= pow(2, bit) - 1);
   }
 }
+
 extension AmountUtil on Amount {
   String getDisplayString([int? precision]) {
     return displayValue.toMaxPrecisionWithoutScientificNotation(
       precision ?? decimals,
     );
-  } 
+  }
 }
 
 extension StringUtil on double {
@@ -88,7 +88,8 @@ extension StringUtil on double {
       return exact;
     }
   }
-    int _countZeroDigits(String str) {
+
+  int _countZeroDigits(String str) {
     int zeroCount = 0;
 
     if (str.replaceAll("-", "").indexOf('.') > 1) {
@@ -104,7 +105,7 @@ extension StringUtil on double {
     return zeroCount;
   }
 
-   String toExactString() {
+  String toExactString() {
     // https://stackoverflow.com/questions/62989638/convert-long-double-to-string-without-scientific-notation-dart
     double value = this;
     var sign = "";

@@ -51,14 +51,14 @@ class SwappingScreen extends ConsumerWidget {
                 onPressed: () {
                   NomoNavigator.of(context).push(HistoryScreenRoute());
                 },
-                shape: BoxShape.circle,
+                shape: BoxShape.rectangle,
                 padding: const EdgeInsets.all(8),
                 iconSize: 18,
                 textStyle: context.theme.typography.b2.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
                 // ignore: deprecated_member_use
-                icon: NomoIcons.history,
+                icon: NomoIcons.clockRotateLeft,
               ),
             ],
           ),

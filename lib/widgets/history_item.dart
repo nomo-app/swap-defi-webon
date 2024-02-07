@@ -7,7 +7,7 @@ import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:swapping_webon/provider/model/history_model.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
 import 'package:swapping_webon/provider/model/tx_history_entity.dart';
-import 'package:swapping_webon/utils.dart/js_communication.dart';
+import 'package:swapping_webon/utils/js_communication.dart';
 import 'package:swapping_webon/widgets/currency_item.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 

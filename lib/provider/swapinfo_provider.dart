@@ -1,8 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/swap_preview.dart';
 import 'package:swapping_webon/provider/model/swapinfo.dart';
-import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/utils/amount.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 class SwapInfoNotifier extends StateNotifier<SwapInfo> {
@@ -66,7 +67,7 @@ final balanceValidProvider = StateProvider<bool>((ref) {
       showError = balanceBI == BigInt.zero;
       return showError;
     } catch (e) {
-      print("This is the error in swapInfoProvider!: $e");
+      Logger().e("This is the error in swapInfoProvider!: $e");
     }
   }
   return false;
@@ -87,7 +88,7 @@ final amountValidFromProvider = StateProvider<bool>((ref) {
       final info = ref.watch(swapInfoProvider);
       valid = info.fromAmountIsValid(balance);
     } catch (e) {
-      print("This is the error in swapinfo:  $e");
+      Logger().e("This is the error in swapinfo:  $e");
     }
   }
 

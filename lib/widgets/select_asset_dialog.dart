@@ -102,6 +102,13 @@ class SelectAssetDialog extends ConsumerWidget {
                     final widget = WalletWidget(
                       token: token,
                       onTap: () {
+                        ref
+                            .read(swapInfoProvider.notifier)
+                            .setFromAmount(BigInt.from(-1));
+                        ref
+                            .read(swapInfoProvider.notifier)
+                            .setToAmount(BigInt.from(-1));
+
                         Navigator.of(context).pop(token);
                         if (isFrom) {
                           ref.read(swapInfoProvider.notifier).setFrom(token);

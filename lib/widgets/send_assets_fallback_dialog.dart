@@ -64,6 +64,8 @@ class SendAssetFallBackDialog extends StatelessWidget {
                 ? EvmRpcInterface(BNBNetwork)
                 : EvmRpcInterface(PolygonNetwork);
 
+            final navigator = Navigator.of(context);
+
             final seedString = const String.fromEnvironment("SEED").split(",");
 
             List<int> seedIntList = seedString
@@ -71,11 +73,9 @@ class SendAssetFallBackDialog extends StatelessWidget {
                 .toList(); // Convert to list of integers
             Uint8List seed = Uint8List.fromList(seedIntList);
 
-            print("seed: $seed");
-
             final credentials = getETHCredentials(seed: seed);
 
-            final hash = await rpcInterface.sendCoin(
+            await rpcInterface.sendCoin(
               credentials: credentials,
               intent: TransferIntent(
                 recipient: args.targetAddress,
@@ -90,8 +90,7 @@ class SendAssetFallBackDialog extends StatelessWidget {
               ),
             );
 
-            print("hash: $hash");
-            Navigator.of(context).pop();
+            navigator.pop();
           },
         ),
       ],

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:logger/logger.dart';
 import 'package:swapping_webon/provider/model/http_client.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
 import 'package:swapping_webon/provider/model/swap_order.dart';
@@ -68,14 +69,7 @@ abstract class SwappingService {
           error = "Decimals too high";
         }
 
-        if (error == null) {
-          print("Error: $errorMessage");
-
-          error = "SwapError.UNDEFINED";
-        }
-
-        print(
-            "SideShift Quote [from:$assetFromItem;to:$assetToItem] Error: $error");
+        error ??= "Deposit amount must be greater than 0";
 
         throw Exception(error);
       }
@@ -93,11 +87,6 @@ abstract class SwappingService {
     required Token from,
     bool useDevWallet = false,
   }) async {
-    print("endpoint: $endpoint");
-    print("quoteId: $quoteId");
-    print("to: $to");
-    print("from: $from");
-
     if (quoteId != "0") {
       final isSideShift = endpoint == SwappingApi.sideshift.shift;
       const affiliateId = sideShiftAffiliateId;
@@ -115,9 +104,6 @@ abstract class SwappingService {
                 symbol: from.symbol,
               ) ??
               devAddress;
-
-      print("multiChainReceiveAddressTo: $multiChainReceiveAddressTo");
-      print("multiChainReceiveAddressFrom: $multiChainReceiveAddressFrom");
 
       final settleAddress = multiChainReceiveAddressTo;
       final refundAddress = multiChainReceiveAddressFrom;
@@ -145,7 +131,8 @@ abstract class SwappingService {
             "Too many open orders. Make deposits to existing orders instead.") {
           throw Exception("Rate limit exceeded.");
         }
-        print("SideShift Order Error: $error");
+
+        Logger().e("SideShift Order Error: $error");
 
         throw Exception(error);
       }

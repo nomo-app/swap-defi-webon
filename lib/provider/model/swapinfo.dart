@@ -1,4 +1,4 @@
-import 'package:swapping_webon/utils.dart/amount.dart';
+import 'package:swapping_webon/utils/amount.dart';
 import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const nullToken = Token(

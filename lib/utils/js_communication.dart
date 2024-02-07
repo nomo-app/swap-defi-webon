@@ -8,8 +8,6 @@ final visibleAssetsProvider =
 
 final priceProvider =
     FutureProvider.family<AssetPrice, String>((ref, symbol) async {
-  print("priceProvider: $symbol");
-
   return await WebonKitDart.getAssetPrice(
     symbol: symbol,
   );

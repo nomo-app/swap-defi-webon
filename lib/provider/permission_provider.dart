@@ -45,15 +45,15 @@ enum SwappingApi {
     history: "/shifts",
     singleHistory: "/shift",
   ),
-  avinocZone(
-    base: "https://avinoc.one/api/v2",
-    coin: "/coins",
-    shift: "/shifts/fixed",
-    varShift: "/shifts/variable",
-    quote: "/quotes",
-    history: "/shifts",
-    singleHistory: "/shift",
-  ),
+  // avinocZone(
+  //   base: "https://avinoc.one/api/v2",
+  //   coin: "/coins",
+  //   shift: "/shifts/fixed",
+  //   varShift: "/shifts/variable",
+  //   quote: "/quotes",
+  //   history: "/shifts",
+  //   singleHistory: "/shift",
+  // ),
   ;
 
   final String coin;

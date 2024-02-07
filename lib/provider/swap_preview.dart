@@ -8,8 +8,6 @@ const loadingPreview = AsyncValue.data(SwapPreview(-1));
 const refetchPreview = AsyncValue.data(SwapPreview(-2));
 const wrongInputPreview = AsyncValue.data(SwapPreview(-3));
 
-const _previewRefreshInterval = Duration(seconds: 2);
-
 class SwapPreview {
   final double amount;
   final double? rate;
@@ -28,11 +26,7 @@ class SwapPreview {
 class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
   final Ref ref;
 
-  SwapPreviewNotifier(this.ref) : super(loadingPreview) {
-    Stream.periodic(_previewRefreshInterval).listen((event) {
-      if (mounted) loadNewPreview();
-    });
-  }
+  SwapPreviewNotifier(this.ref) : super(loadingPreview);
 
   SwapInfo? last;
   SwapInfo? error;
@@ -79,9 +73,14 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
       return;
     }
 
+    if (info.fromAmount.value == BigInt.from(0)) {
+      state = AsyncValue.error(
+          "Deposit amount must be greater than 0", StackTrace.current);
+      return;
+    }
+
     if (isValid) {
       state = const AsyncValue.loading();
-      print("Fetch Quote Preview");
 
       final fromAmount = useFrom ? info.fromAmount.value : null;
       final toAmount = useFrom ? null : info.toAmount.value;
@@ -98,8 +97,6 @@ class SwapPreviewNotifier extends StateNotifier<AsyncValue<SwapPreview>> {
           fromAmount,
           toAmount,
         );
-
-        print("this is the quote we got $quote");
 
         final amount = useFrom ? quote.settleAmount : quote.depositAmount;
 

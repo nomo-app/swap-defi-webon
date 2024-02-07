@@ -30,7 +30,7 @@ class HistoryScreen extends ConsumerWidget {
               SecondaryNomoButton(
                 shape: BoxShape.rectangle,
                 padding: const EdgeInsets.all(8),
-                iconSize: 22,
+                iconSize: 18,
                 icon: NomoIcons.arrowLeft,
                 onPressed: () => NomoNavigator.of(context).pop(),
               ),
@@ -44,7 +44,7 @@ class HistoryScreen extends ConsumerWidget {
               SecondaryNomoButton(
                 shape: BoxShape.rectangle,
                 padding: const EdgeInsets.all(8),
-                iconSize: 22,
+                iconSize: 18,
                 icon: NomoIcons.arrowRotateLeft,
                 onPressed: () {
                   ref.read(historyProvider.notifier).fetchData();
