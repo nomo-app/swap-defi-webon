@@ -96,6 +96,8 @@ export async function nomoCheckForWebOnUpdate() {
  * For example, this can be used to refresh themes or languages when re-opening a WebOn after a pause.
  */
 export async function nomoRegisterOnWebOnVisible(callback) {
+    console.log("nomoRegisterOnWebOnVisible callback", callback);
+
     window.onWebOnVisible = callback;
     if (isFallbackModeActive()) {
         return;
@@ -157,3 +159,6 @@ function nomoNativeLog(severity, args) {
         originalConsoleError(e);
     }
 }
+
+
+window.nomoRegisterOnWebOnVisible = nomoRegisterOnWebOnVisible;
