@@ -142,6 +142,8 @@ class _SwapCardState extends ConsumerState<SwapCard> {
       buttonType = ActionType.nonInteractive;
     }
 
+    final isFromUsed = ref.read(swapPreviewProvider.notifier).getIfFromIsUsed;
+
     return NomoCard(
       borderRadius: BorderRadius.circular(8),
       elevation: 1,
@@ -216,7 +218,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     isFrom: true,
                     textNotifier: fromTextNotifer,
                   ),
-                  if (swapPreview.isLoading)
+                  if (swapPreview.isLoading && !isFromUsed)
                     Positioned(
                       right: 12,
                       top: 18,
@@ -296,7 +298,7 @@ class _SwapCardState extends ConsumerState<SwapCard> {
                     isFrom: false,
                     textNotifier: toTextNotifer,
                   ),
-                  if (swapPreview.isLoading)
+                  if (swapPreview.isLoading && isFromUsed)
                     Positioned(
                       right: 12,
                       top: 18,

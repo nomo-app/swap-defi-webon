@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_router/nomo_router.dart';
-import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/loading_shimmer.dart';
 import 'package:nomo_ui_kit/components/loading/shimmer/shimmer.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
@@ -21,17 +20,17 @@ class HistoryScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(
-          height: 32,
+          height: 16,
         ),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              SecondaryNomoButton(
-                shape: BoxShape.rectangle,
-                padding: const EdgeInsets.all(8),
-                iconSize: 18,
-                icon: NomoIcons.arrowLeft,
+              IconButton(
+                icon: Icon(
+                  NomoIcons.arrowLeft,
+                  color: context.theme.colors.foreground1,
+                ),
                 onPressed: () => NomoNavigator.of(context).pop(),
               ),
               const Spacer(),
@@ -41,11 +40,11 @@ class HistoryScreen extends ConsumerWidget {
                 fontWeight: FontWeight.bold,
               ),
               const Spacer(),
-              SecondaryNomoButton(
-                shape: BoxShape.rectangle,
-                padding: const EdgeInsets.all(8),
-                iconSize: 18,
-                icon: NomoIcons.arrowRotateLeft,
+              IconButton(
+                icon: Icon(
+                  NomoIcons.arrowRotateLeft,
+                  color: context.theme.colors.foreground1,
+                ),
                 onPressed: () {
                   ref.read(historyProvider.notifier).fetchData();
                 },

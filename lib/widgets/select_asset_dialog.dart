@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:logger/logger.dart';
 import 'package:nomo_ui_kit/components/dialog/nomo_dialog.dart';
 import 'package:nomo_ui_kit/components/input/textInput/nomo_input.dart';
 import 'package:nomo_ui_kit/components/text/nomo_text.dart';
@@ -58,6 +59,8 @@ class SelectAssetDialog extends ConsumerWidget {
           valueNotifier.value.toLowerCase();
     });
 
+    Logger().i("loading assets: $isLoading");
+
     return NomoDialog(
       backgroundColor: context.theme.colors.surface,
       titleStyle: context.theme.typography.h2,
@@ -84,7 +87,7 @@ class SelectAssetDialog extends ConsumerWidget {
                   child: CircularProgressIndicator(),
                 ),
               ),
-            if (tokens.isEmpty)
+            if (tokens.isEmpty && !isLoading)
               SliverToBoxAdapter(
                 child: Center(
                   child: Column(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:nomo_router/router/nomo_navigator.dart';
 import 'package:nomo_ui_kit/components/app/routebody/nomo_route_body.dart';
-import 'package:nomo_ui_kit/components/buttons/secondary/nomo_secondary_button.dart';
 import 'package:nomo_ui_kit/icons/nomo_icons.dart';
 import 'package:nomo_ui_kit/theme/nomo_theme.dart';
 import 'package:nomo_ui_kit/theme/theme_provider.dart';
@@ -47,18 +46,12 @@ class SwappingScreen extends ConsumerWidget {
                   ),
                 ),
               const SizedBox(width: 16),
-              SecondaryNomoButton(
+              IconButton(
                 onPressed: () {
                   NomoNavigator.of(context).push(HistoryScreenRoute());
                 },
-                shape: BoxShape.rectangle,
-                padding: const EdgeInsets.all(8),
-                iconSize: 18,
-                textStyle: context.theme.typography.b2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                // ignore: deprecated_member_use
-                icon: NomoIcons.clockRotateLeft,
+                icon: Icon(NomoIcons.clockRotateLeft,
+                    color: context.theme.colors.foreground1),
               ),
             ],
           ),
