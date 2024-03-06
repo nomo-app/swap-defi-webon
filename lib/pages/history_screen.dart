@@ -16,6 +16,8 @@ class HistoryScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final history = ref.watch(historyProvider);
 
+    final hCount = ref.read(historyCount);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -53,11 +55,11 @@ class HistoryScreen extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 48),
-        if (history.isLoading)
+        if (history.isLoading && hCount.hasValue)
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: 5,
+              itemCount: hCount.value,
               itemBuilder: (context, index) {
                 return shimmerWidget(context);
               },

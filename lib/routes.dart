@@ -20,16 +20,19 @@ Widget wrapper(nav) {
 
 @AppRoutes()
 const _routes = [
-  MenuNestedPageRouteInfo(
-      wrapper: wrapper,
-      path: "/",
-      page: SwappingScreen,
-      title: "Swapping Screen",
-      children: [
-        MenuPageRouteInfo(
-          path: "/history",
-          page: HistoryScreen,
-          title: "History",
-        )
-      ]),
+  NestedPageRouteInfo(
+    wrapper: wrapper,
+    children: [
+      MenuPageRouteInfo(
+        path: "/",
+        page: SwappingScreen,
+        title: "Swapping Screen",
+      ),
+      MenuPageRouteInfo(
+        path: "/history",
+        page: HistoryScreen,
+        title: "History",
+      ),
+    ],
+  ),
 ];

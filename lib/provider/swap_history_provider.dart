@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:swapping_webon/provider/history_model_service.dart';
 import 'package:swapping_webon/provider/model/history_model.dart';
 import 'package:swapping_webon/provider/permission_provider.dart';
+import 'package:webon_kit_dart/webon_kit_dart.dart';
 
 const Duration duration = Duration(minutes: 1);
 
@@ -15,6 +16,20 @@ final historyProvider =
         (ref) {
   ref.watch(historyUpdateProvider);
   return HistoryNotifier();
+});
+
+final historyCount = FutureProvider<int>((ref) async {
+  int count = 0;
+  while (true) {
+    final result = await WebonKitDart.getLocalStorage(
+        key: "sideshift/swap_history/$count");
+    if (result == null) {
+      break;
+    }
+    count++;
+  }
+
+  return count;
 });
 
 class HistoryNotifier extends StateNotifier<AsyncValue<List<HistoryModel>>> {

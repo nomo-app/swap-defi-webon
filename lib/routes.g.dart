@@ -13,7 +13,8 @@ class AppRouter extends NomoAppRouter {
             SwappingScreenRoute.path: ([a]) => SwappingScreenRoute(),
             HistoryScreenRoute.path: ([a]) => HistoryScreenRoute(),
           },
-          _routes.expanded.toList(),
+          _routes.expanded.where((r) => r is! NestedPageRouteInfo).toList(),
+          _routes.expanded.whereType<NestedPageRouteInfo>().toList(),
         );
 }
 
@@ -25,7 +26,7 @@ class SwappingScreenRoute extends AppRoute implements SwappingScreenArguments {
   SwappingScreenRoute()
       : super(
           name: '/',
-          page: const SwappingScreen(),
+          page: SwappingScreen(),
         );
   static String path = '/';
 }
@@ -38,7 +39,7 @@ class HistoryScreenRoute extends AppRoute implements HistoryScreenArguments {
   HistoryScreenRoute()
       : super(
           name: '/history',
-          page: const HistoryScreen(),
+          page: HistoryScreen(),
         );
   static String path = '/history';
 }

@@ -42,6 +42,7 @@ class SwapAssetInput extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           NomoInput(
+            placeHolder: "0.0",
             valueNotifier: textNotifier,
             onChanged: onChanged,
             selectedBorder: Border.all(
@@ -59,7 +60,7 @@ class SwapAssetInput extends ConsumerWidget {
             ),
             textAlign: TextAlign.end,
             padding: const EdgeInsets.only(
-              left: 4,
+              left: 12,
               right: 12,
               top: 12,
               bottom: 12,
@@ -68,53 +69,51 @@ class SwapAssetInput extends ConsumerWidget {
               FilteringTextInputFormatter.allow(RegExp(r'^\d+([.,]\d{0,4})?')),
             ],
           ),
-          if (showBottomInfo)
-            AnimatedContainer(
-              height: showBottomInfo ? 32 : 0,
-              duration: _kExpand,
-              decoration: BoxDecoration(
-                color: context.theme.colors.background2,
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(12),
-                ),
-              ),
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                bottom: 12,
-              ),
-              child: AnimatedOpacity(
-                opacity: showBottomInfo ? 1 : 0,
-                duration: _kExpand,
-                child: inputActions,
+          AnimatedContainer(
+            height: showBottomInfo ? 32 : 0,
+            duration: _kExpand,
+            decoration: BoxDecoration(
+              color: context.theme.colors.background2,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
               ),
             ),
-          if (showError && showBottomInfo)
-            AnimatedContainer(
-              height: 42,
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              bottom: 12,
+            ),
+            child: AnimatedOpacity(
+              opacity: showBottomInfo ? 1 : 0,
               duration: _kExpand,
-              decoration: BoxDecoration(
-                color: context.theme.colors.error,
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(12),
-                ),
-              ),
-              padding: const EdgeInsets.only(
-                left: 12,
-                right: 12,
-                bottom: 8,
-              ),
-              child: AnimatedOpacity(
-                opacity: 1,
-                duration: _kExpand,
-                child: Column(
-                  children: [
-                    const SizedBox(height: 8),
-                    errorWidget!,
-                  ],
-                ),
+              child: inputActions,
+            ),
+          ),
+          AnimatedContainer(
+            height: showError && showBottomInfo ? 42 : 0,
+            duration: _kExpand,
+            decoration: BoxDecoration(
+              color: context.theme.colors.error,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(12),
               ),
             ),
+            padding: const EdgeInsets.only(
+              left: 12,
+              right: 12,
+              bottom: 8,
+            ),
+            child: AnimatedOpacity(
+              opacity: 1,
+              duration: _kExpand,
+              child: Column(
+                children: [
+                  const SizedBox(height: 8),
+                  errorWidget!,
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
